@@ -48,7 +48,9 @@ public class Screen extends JPanel implements Runnable {
 	public Screen(Frame frame) {
 		this.frame = frame;
 		MouseHandler mouseHandler = new MouseHandler(this);
+		KeyHandler keyHandler=new KeyHandler(this);
 		frame.addKeyListener(new KeyHandler(this));
+		addKeyListener(keyHandler);
 		addMouseListener(mouseHandler);
 		addMouseMotionListener(mouseHandler);
 		thread.start();
@@ -83,6 +85,7 @@ public class Screen extends JPanel implements Runnable {
 				for (int j = 0; j < 13; j++) {
 					g.drawImage(new ImageIcon(Grass.getPath()).getImage(), i * 40 + 50, j * 40 + 50, null);
 					switch (gameField.gameMaps.map[j][i]) {
+					case -1: break;
 					case 1:
 						g.drawImage(new ImageIcon(Road.getPath()).getImage(), i * 40 + 50, j * 40 + 50, null);
 						break;
@@ -105,6 +108,7 @@ public class Screen extends JPanel implements Runnable {
 					
 				}
 			}
+			//ve spawner va target
 			g.drawImage(new ImageIcon(Spawner.getPath()).getImage(), gameField.gameMaps.spawnerPosition.x - 12,
 					gameField.gameMaps.spawnerPosition.y - 12, null);
 			g.drawImage(new ImageIcon(Target.getPath()).getImage(), gameField.gameMaps.targetPosition.x - 12,
@@ -114,9 +118,11 @@ public class Screen extends JPanel implements Runnable {
 			// g.setColor(null); ve thap
 			for (int i = 0; i < 26; i++) {
 				for (int j = 0; j < 13; j++) {
-					switch (gameField.gameMaps.tower[j][i]) {
-					case 0:
-						break;
+					switch (gameField.gameMaps.towerMap[j][i]) {
+					case 0: break;
+					case -1:
+						//System.out.println("destroyed"); break;
+						g.drawImage(new ImageIcon("res\\GameEntity\\GameTile\\Tower\\Destroyed.png").getImage(), i*40+50, j*40+50, null); break;
 					case 1:
 						draw(g, i * 40 + 70, j * 40 + 70, new NormalTower(), exepting);
 						break;
@@ -185,14 +191,14 @@ public class Screen extends JPanel implements Runnable {
 	public void loadGame() {
 		isRunning = true;
 		level = new Level(1);
-		gameField = new GameField(level);
 		user = new User(this);
+		user.creatPlayer();
+		gameField = new GameField(level, user.player);
 	}
 
 	// bat dau choi
 	public void startGame(User user) {
 		if(started==false) {
-			user.creatPlayer();
 			status = 1;
 			started=true;
 			delay=level.spawnSpeed;
@@ -243,6 +249,12 @@ public class Screen extends JPanel implements Runnable {
 		}
 	}
 	
+	public void destroyTower() {
+			gameField.gameMaps.towerMap[(mousePosY-50)/40][(mousePosX-50)/40]=-1;
+			System.out.println("try destroy"+ (mousePosY-50)/40+" "+(mousePosX-50)/40);
+			System.out.println(gameField.gameMaps.towerMap[(mousePosY-50)/40][(mousePosX-50)/40]);
+	}
+	
 	public boolean isAble(int x, int y) {
 		int indexX = (x - 50) / 40;
 		int indexY = (y - 50) / 40;
@@ -250,7 +262,7 @@ public class Screen extends JPanel implements Runnable {
 			if (gameField.gameMaps.map[indexY][indexX] != 0) {
 				return false;
 			}
-			if (gameField.gameMaps.tower[indexY][indexX] != 0) {
+			if (gameField.gameMaps.towerMap[indexY][indexX] != 0) {
 				return false;
 			}
 		} else
@@ -260,7 +272,7 @@ public class Screen extends JPanel implements Runnable {
 
 	public void placeTower(int x, int y, int onHand) {
 		if (isAble(x, y)) {
-			gameField.gameMaps.tower[(int) (y - 50) / 40][(int) (x - 50) / 40] = onHand;
+			gameField.gameMaps.towerMap[(int) (y - 50) / 40][(int) (x - 50) / 40] = onHand;
 			switch (onHand) {
 			case 1:
 				user.player.coin -= NormalTower.getCost();
@@ -290,6 +302,7 @@ public class Screen extends JPanel implements Runnable {
 				System.out.println("indexX " + (mousePosX - 50) / 40 + " indexY " + (mousePosY - 50) / 40
 						+ isAble(mousePosX, mousePosY));
 			}
+			
 		}
 
 		// xu ly keo tha
@@ -342,6 +355,10 @@ public class Screen extends JPanel implements Runnable {
 
 		public void srtGame() {
 			startGame(user);
+		}
+
+		public void destroy() {
+			destroyTower();
 		}
 	}
 }

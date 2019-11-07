@@ -2,10 +2,12 @@ package towerdefense.gameEntity.enemy;
 
 import towerdefense.DelayFrame;
 import towerdefense.GameMaps;
+import towerdefense.Player;
 import towerdefense.Position;
 import towerdefense.gameEntity.GameEntity;
 
 public abstract class Enemy implements GameEntity {
+	Player player;
 	boolean first;
 	boolean moveUp;
 	boolean moveDown;
@@ -60,8 +62,7 @@ public abstract class Enemy implements GameEntity {
 	public void update() {
 		if (pos.equals(gameMaps.targetPosition)||health <= 0) {
 			alive = false;
-			//run = false;
-			//active=false;
+			player.health-=damage;
 		}
 	}
 

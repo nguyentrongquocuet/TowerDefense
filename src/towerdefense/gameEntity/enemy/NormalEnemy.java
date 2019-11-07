@@ -1,8 +1,11 @@
 package towerdefense.gameEntity.enemy;
 
+import towerdefense.Player;
+
 public class NormalEnemy extends Enemy{
-	public NormalEnemy() {
+	public NormalEnemy(Player player) {
 		super(1,100, 20, 10, 15, 30, "res\\GameEntity\\Enemy\\NormalEnemy.png");
+		this.player=player;
 	}
 	public void setPos(int x, int y) {
 		super.setPos(x, y);

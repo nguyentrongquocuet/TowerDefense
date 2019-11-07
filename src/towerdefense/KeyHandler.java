@@ -31,6 +31,9 @@ public class KeyHandler implements KeyListener {
 		if (keyCode == 27) {
 			this.gameStatus.exitGame();
 		}
+		if(keyCode==71) {
+			gameStatus.destroy();
+		}
 	}
 
 }

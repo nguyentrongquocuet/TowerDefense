@@ -6,9 +6,17 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import javax.swing.ImageIcon;
+
+import towerdefense.gameEntity.gameTile.MachineGunTower;
+import towerdefense.gameEntity.gameTile.NormalTower;
+import towerdefense.gameEntity.gameTile.SniperTower;
+import towerdefense.gameEntity.gameTile.Tower;
+
 public class GameMaps {
 	public int[][] map;
-	public int[][] tower;
+	public int[][] towerMap;
+	public Tower[][] tower;
 	public Position spawnerPosition;
 	public Position targetPosition;
 	public Position spawnerMatrixPosition;
@@ -16,9 +24,11 @@ public class GameMaps {
 
 	public GameMaps() {
 		map = new int[13][26];
-		tower = new int[13][26];
+		towerMap = new int[13][26];
+		tower= new Tower[13][26];
 		this.loadData("res\\Config\\map.txt", map);
-		this.loadData("res\\Config\\tower.txt", tower);
+		this.loadData("res\\Config\\tower.txt", towerMap);
+		this.buildTowerMap();
 		for (int i = 0; i < 13; i++) {
 			for (int j = 0; j < 26; j++) {
 				if (this.map[i][j] == 3) {
@@ -53,5 +63,24 @@ public class GameMaps {
 			return false;
 		}
 		return true;
+	}
+	public void buildTowerMap() {
+		for (int i = 0; i < 13; i++) {
+			for (int j = 0; j < 26; j++) {
+				switch (towerMap[i][j]) {
+				case 0:
+					 tower[i][j]=null; break;
+				case 1:
+					tower[i][j]=new NormalTower();
+					break;
+				case 2:
+					tower[i][j]=new MachineGunTower();
+					break;
+				case 3:
+					tower[i][j]=new SniperTower();
+					break;
+				}
+			}
+		}
 	}
 }

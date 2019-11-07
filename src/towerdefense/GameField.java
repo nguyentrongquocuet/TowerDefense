@@ -8,6 +8,7 @@ import towerdefense.gameEntity.enemy.SmallerEnemy;
 import towerdefense.gameEntity.enemy.TankerEnemy;
 
 public class GameField {
+	Player player;
 	boolean endStage;
 	int frame;
 	boolean endWave;
@@ -24,7 +25,8 @@ public class GameField {
 	GameStage stage;
 	int pivok;
 	ArrayList<Enemy> enemiesList;
-	public GameField(Level lv) {
+	public GameField(Level lv,Player player) {
+		this.player=player;
 		index=0;
 		frame=0;
 		delayFrame=new DelayFrame();
@@ -52,10 +54,10 @@ public class GameField {
 	public void buildGameEnemy() {
 		for(int i=0; i< stage.stageEnemies.size(); i++) {
 			switch (stage.stageEnemies.get(i)) {
-			case 1: enemiesList.add(new SmallerEnemy()); break;
-			case 2: enemiesList.add(new NormalEnemy()); break;
-			case 3: enemiesList.add(new TankerEnemy()); break;
-			case 4: enemiesList.add(new BossEnemy()); break;
+			case 1: enemiesList.add(new SmallerEnemy(player)); break;
+			case 2: enemiesList.add(new NormalEnemy(player)); break;
+			case 3: enemiesList.add(new TankerEnemy(player)); break;
+			case 4: enemiesList.add(new BossEnemy(player)); break;
 			}
 		}
 	}
@@ -79,18 +81,14 @@ public class GameField {
 		System.out.println("STAGE NUMBER" + stage.stageNumber);
 	}
 	public void update() {
-		//System.out.println("index"+index);
+		gameMaps.buildTowerMap();
 		if(index==pivok) {endWave=true; waveNumber++; pivok+=level.startEnemies+(waveNumber-1)*level.enemiesPerWaveUp; System.out.println("NEW PIVOK "+pivok +"index"+index);}
 		else endWave=false;
-		//System.out.println("EndWave"+endWave);
 		if(endWave && index==enemiesList.size()) {
 			endStage= true; 
 			System.out.println("ENDSTAGE");}
 		winStage(); 
-		//System.out.println("Endstage"+endStage);
-		//System.out.println("winstage"+winStage);
 		if(winStage) { System.out.println("WIN STAGE "+ stageNumber); nextStage();}
-		System.out.println("IS END STAGE" + endStage);
 	}
 	public void winStage() {
 		if(endStage==true) {

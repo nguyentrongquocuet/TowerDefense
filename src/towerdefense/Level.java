@@ -16,7 +16,7 @@ public class Level {
 			enemiesPerWaveUp = 3;
 			spawnSpeed = 600;
 			numberWaveUp = 1;
-			newWaveSpeed =5000;
+			newWaveSpeed =2000;
 			break;
 		case 2:
 			startEnemies = 7;
