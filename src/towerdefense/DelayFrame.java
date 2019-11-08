@@ -1,13 +1,15 @@
 package towerdefense;
 
 public class DelayFrame {
-	public int begin=0;
+	//public int begin=0;
 	public int current=0;
 	//public boolean delayed=false;
-	public boolean delayed(int n) {
-		if(current-begin>=n) {
+	public int delay;
+	public boolean delayed() {
+		if(current==delay) {
 			current=0;
+			System.out.println();
 			return true;
-		}else {current++; return false;}
+		} else {current++; return false;}
 	}
 }

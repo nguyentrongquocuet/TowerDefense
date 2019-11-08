@@ -1,6 +1,5 @@
 package towerdefense;
 
-
 import javax.swing.*;
 
 public class Frame extends JFrame {
@@ -19,7 +18,11 @@ public class Frame extends JFrame {
         this.setTitle("TowerDefense");
         //this.setLocationRelativeTo(null);
         Screen screen= new Screen(this);
+       
         this.add(screen);
         this.setVisible(true);
+        
+        
 
-}}
+}
+}

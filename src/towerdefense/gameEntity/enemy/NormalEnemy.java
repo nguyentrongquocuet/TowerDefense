@@ -1,14 +1,13 @@
 package towerdefense.gameEntity.enemy;
 
+import towerdefense.GameField;
 import towerdefense.Player;
 
 public class NormalEnemy extends Enemy{
-	public NormalEnemy(Player player) {
-		super(1,100, 20, 10, 15, 30, "res\\GameEntity\\Enemy\\NormalEnemy.png");
+	public NormalEnemy(Player player, GameField gameField) {
+		super(100, 20, 1f, 15, 30, "res\\GameEntity\\Enemy\\NormalEnemy.png");
 		this.player=player;
-	}
-	public void setPos(int x, int y) {
-		super.setPos(x, y);
+		this.gameField=gameField;
 	}
 	public void setTexturePath(String s) {
 		this.texturePath=s;

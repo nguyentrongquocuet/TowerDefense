@@ -8,4 +8,5 @@ public class Grass extends GameTile {
 	public static String getPath() {
 		return "res\\GameEntity\\GameTile\\Grass.png";
 	}
+
 }

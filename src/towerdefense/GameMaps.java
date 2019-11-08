@@ -6,42 +6,34 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import javax.swing.ImageIcon;
-
 import towerdefense.gameEntity.gameTile.MachineGunTower;
 import towerdefense.gameEntity.gameTile.NormalTower;
 import towerdefense.gameEntity.gameTile.SniperTower;
 import towerdefense.gameEntity.gameTile.Tower;
 
 public class GameMaps {
+	GameField gameField;
+	int towerSize=0;
 	public int[][] map;
 	public int[][] towerMap;
-	public Tower[][] tower;
+	public Tower[] tower;
 	public Position spawnerPosition;
 	public Position targetPosition;
 	public Position spawnerMatrixPosition;
 	public Position targetMatrixPosition;
+	public Position road;
 
-	public GameMaps() {
+	public GameMaps(GameField gameField) {
+		this.gameField=gameField;
 		map = new int[13][26];
 		towerMap = new int[13][26];
-		tower= new Tower[13][26];
-		this.loadData("res\\Config\\map.txt", map);
-		this.loadData("res\\Config\\tower.txt", towerMap);
-		this.buildTowerMap();
-		for (int i = 0; i < 13; i++) {
-			for (int j = 0; j < 26; j++) {
-				if (this.map[i][j] == 3) {
-					spawnerMatrixPosition = new Position(i, j);
-					spawnerPosition = new Position(j * 40 + 50, i * 40 + 50);
-				} else if (this.map[i][j] == 2) {
-					targetMatrixPosition = new Position(i, j);
-					targetPosition = new Position(j * 40 + 50, i * 40 + 50);
-				}
-			}
-		}
+		tower= new Tower[13*26];
+		loadData("res\\Config\\map.txt", map);
+		loadData("res\\Config\\tower.txt", towerMap);
+		buildTowerMap();
+		findSpecialPosition();
 	}
-
+	
 	public boolean loadData(String filePath, int[][] arr) {
 		Path path = Paths.get(filePath);
 		Charset charset = Charset.forName("US-ASCII");
@@ -64,23 +56,39 @@ public class GameMaps {
 		}
 		return true;
 	}
+	
+	public void findSpecialPosition() {
+		for (int i = 0; i < 13; i++) {
+			for (int j = 0; j < 26; j++) {
+				if (this.map[i][j] == 3) {
+					spawnerMatrixPosition = new Position(i, j);
+					spawnerPosition = new Position(j * 40 + 70, i * 40 + 70);
+				} else if (this.map[i][j] == 2) {
+					targetMatrixPosition = new Position(i, j);
+					targetPosition = new Position(j * 40 + 70, i * 40 + 70);
+				}
+			}
+		}
+	}
+	
 	public void buildTowerMap() {
+		towerSize=0;
 		for (int i = 0; i < 13; i++) {
 			for (int j = 0; j < 26; j++) {
 				switch (towerMap[i][j]) {
-				case 0:
-					 tower[i][j]=null; break;
+				default : tower[towerSize]=null; break;
 				case 1:
-					tower[i][j]=new NormalTower();
+					tower[towerSize]=new NormalTower(new Position(j*40+70, i*40+70), gameField); towerSize++;
 					break;
 				case 2:
-					tower[i][j]=new MachineGunTower();
+					tower[towerSize]=new MachineGunTower(new Position(j*40+70, i*40+70), gameField); towerSize++;
 					break;
 				case 3:
-					tower[i][j]=new SniperTower();
+					tower[towerSize]=new SniperTower(new Position(j*40+70, i*40+70), gameField); towerSize++;
 					break;
 				}
 			}
 		}
 	}
+	
 }

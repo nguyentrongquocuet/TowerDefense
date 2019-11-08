@@ -10,7 +10,7 @@ public abstract class GameTile implements GameEntity{
 	public void setTexturePath(String s) {
 		this.texturePath=s;
 	}
-	public void setPos(int x, int y) {
+	public void setPos(float x, float y) {
 		pos.setPosition(x, y);
 	}
 }

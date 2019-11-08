@@ -16,21 +16,21 @@ public class Level {
 			enemiesPerWaveUp = 3;
 			spawnSpeed = 600;
 			numberWaveUp = 1;
-			newWaveSpeed =2000;
+			newWaveSpeed =7500;
 			break;
 		case 2:
 			startEnemies = 7;
 			enemiesPerWaveUp = 4;
 			spawnSpeed = 500;
 			numberWaveUp = 2;
-			newWaveSpeed = 15000;
+			newWaveSpeed = 7500;
 			break;
 		case 3:
 			startEnemies = 9;
 			enemiesPerWaveUp = 5;
 			spawnSpeed = 400;
 			numberWaveUp = 2;
-			newWaveSpeed = 10000;
+			newWaveSpeed = 7500;
 			break;
 		}
 	}

@@ -5,12 +5,9 @@ package towerdefense;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
-import java.util.concurrent.TimeUnit;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
-
-import sun.nio.cs.ext.TIS_620;
 import towerdefense.gameEntity.enemy.Enemy;
 import towerdefense.gameEntity.gameTile.Grass;
 import towerdefense.gameEntity.gameTile.MachineGunTower;
@@ -23,24 +20,23 @@ import towerdefense.gameEntity.gameTile.Target;
 import towerdefense.gameEntity.gameTile.Tower;
 
 public class Screen extends JPanel implements Runnable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	// khai bao
-	boolean started=false;
+	private boolean started=false;
 	private int fps = 0;
-	int delay;
 	public boolean isRunning = false;
 	public int status;// status=0:ingame, 1: pause
 	Frame frame;
-	boolean checked = false;
-	User user;
-	Level level;
-	// GameMaps gameMaps;
-	// GameStage stage;
-	GameField gameField;
-	// public Level level;
-	public Thread thread = new Thread(this);
-	int onHand = 0;// trang thai giu thap
-	public int mousePosX = 0;
-	public int mousePosY = 0;
+	private User user;
+	private Level level;
+	private GameField gameField;
+	private Thread thread = new Thread(this);
+	private int onHand = 0;// trang thai giu thap
+	private int mousePosX = 0;
+	private int mousePosY = 0;
 	Color warning = new Color(255, 16, 0, 90);
 	Color exepting = new Color(64, 64, 64, 64);
 
@@ -49,19 +45,19 @@ public class Screen extends JPanel implements Runnable {
 		this.frame = frame;
 		MouseHandler mouseHandler = new MouseHandler(this);
 		KeyHandler keyHandler=new KeyHandler(this);
-		frame.addKeyListener(new KeyHandler(this));
+		frame.addKeyListener(keyHandler);
 		addKeyListener(keyHandler);
 		addMouseListener(mouseHandler);
 		addMouseMotionListener(mouseHandler);
 		thread.start();
+		setVisible(true);
 	}
 
-	public void draw(Graphics g, int x, int y, Tower tower, Color color) {
-		g.drawImage(new ImageIcon(tower.texturePath).getImage(), x - 20, y - 20, null);
+	private void draw(Graphics g, int x, int y, int range, String texturePath, Color color) {
+		g.drawImage(new ImageIcon(texturePath).getImage(), x - 20, y - 20, null);
 		g.setColor(color);
-		g.fillOval(x - tower.range / 2, y - tower.range / 2, tower.range, tower.range);
+		g.fillOval(x - range / 2, y - range / 2, range, range);
 	}
-
 	public void paintComponent(Graphics g) {
 		g.clearRect(0, 0, frame.getWidth(), frame.getHeight());
 		g.setColor(Color.red);
@@ -85,7 +81,8 @@ public class Screen extends JPanel implements Runnable {
 				for (int j = 0; j < 13; j++) {
 					g.drawImage(new ImageIcon(Grass.getPath()).getImage(), i * 40 + 50, j * 40 + 50, null);
 					switch (gameField.gameMaps.map[j][i]) {
-					case -1: break;
+					case -1: g.drawImage(new ImageIcon("res\\GameEntity\\GameTile\\Tower\\Destroyed.png").getImage(), i * 40 + 50, j * 40 + 50, null);
+						break;
 					case 1:
 						g.drawImage(new ImageIcon(Road.getPath()).getImage(), i * 40 + 50, j * 40 + 50, null);
 						break;
@@ -101,39 +98,19 @@ public class Screen extends JPanel implements Runnable {
 			// ve quai
 			for (Enemy enemy:gameField.enemiesList) {
 				if(enemy.active&&enemy.alive) {
-					g.drawImage(new ImageIcon(enemy.texturePath).getImage(), enemy.pos.x, enemy.pos.y, null);
-					//g.drawRect(enemy.pos.x, enemy.pos.y-8, 40, 5);
-					g.setColor(Color.RED);
-					g.fillRect(enemy.pos.x, enemy.pos.y-8, 40*enemy.realTimeHealth/enemy.health, 5);
-					
+					enemy.draw(g);
 				}
 			}
 			//ve spawner va target
-			g.drawImage(new ImageIcon(Spawner.getPath()).getImage(), gameField.gameMaps.spawnerPosition.x - 12,
-					gameField.gameMaps.spawnerPosition.y - 12, null);
-			g.drawImage(new ImageIcon(Target.getPath()).getImage(), gameField.gameMaps.targetPosition.x - 12,
-					gameField.gameMaps.targetPosition.y - 12, null);
+			g.drawImage(new ImageIcon(Spawner.getPath()).getImage(), (int)gameField.gameMaps.spawnerPosition.x - 32,
+					(int)gameField.gameMaps.spawnerPosition.y - 32, null);
+			g.drawImage(new ImageIcon(Target.getPath()).getImage(), (int)gameField.gameMaps.targetPosition.x - 32,
+					(int)gameField.gameMaps.targetPosition.y - 32, null);
 			
 
 			// g.setColor(null); ve thap
-			for (int i = 0; i < 26; i++) {
-				for (int j = 0; j < 13; j++) {
-					switch (gameField.gameMaps.towerMap[j][i]) {
-					case 0: break;
-					case -1:
-						//System.out.println("destroyed"); break;
-						g.drawImage(new ImageIcon("res\\GameEntity\\GameTile\\Tower\\Destroyed.png").getImage(), i*40+50, j*40+50, null); break;
-					case 1:
-						draw(g, i * 40 + 70, j * 40 + 70, new NormalTower(), exepting);
-						break;
-					case 2:
-						draw(g, i * 40 + 70, j * 40 + 70, new MachineGunTower(), exepting);
-						break;
-					case 3:
-						draw(g, i * 40 + 70, j * 40 + 70, new SniperTower(), exepting);
-						break;
-					}
-				}
+			for(int i=0; i<gameField.gameMaps.towerSize; i++) {
+				gameField.gameMaps.tower[i].draw(g);
 			}
 
 			g.drawImage(new ImageIcon("res\\Background\\Fill.png").getImage(), 0, 0, null);
@@ -159,26 +136,24 @@ public class Screen extends JPanel implements Runnable {
 
 			// thap di chuyen cung chuot
 			if (onHand != 0) {
-				// draw(g, mousePosX, mousePosY,new Tower);
-//				g.drawOval(mousePosX-20, mousePosY-45, 40, 40);
 				switch (onHand) {
 				case 1:
 					if (isAble(mousePosX, mousePosY))
-						draw(g, mousePosX, mousePosY, new NormalTower(), exepting);
+						draw(g, mousePosX, mousePosY, NormalTower.getRange(), NormalTower.getPath(), exepting);
 					else
-						draw(g, mousePosX, mousePosY, new NormalTower(), warning);
+						draw(g, mousePosX, mousePosY, NormalTower.getRange(), NormalTower.getPath(), warning);
 					break;
 				case 2:
 					if (isAble(mousePosX, mousePosY))
-						draw(g, mousePosX, mousePosY, new MachineGunTower(), exepting);
+						draw(g, mousePosX, mousePosY, MachineGunTower.getRange(), MachineGunTower.getPath(), exepting);
 					else
-						draw(g, mousePosX, mousePosY, new MachineGunTower(), warning);
+						draw(g, mousePosX, mousePosY, MachineGunTower.getRange(), MachineGunTower.getPath(), warning);
 					break;
 				case 3:
 					if (isAble(mousePosX, mousePosY))
-						draw(g, mousePosX, mousePosY, new SniperTower(), exepting);
+						draw(g, mousePosX, mousePosY, SniperTower.getRange(), SniperTower.getPath(), exepting);
 					else
-						draw(g, mousePosX, mousePosY, new SniperTower(), warning);
+						draw(g, mousePosX, mousePosY, SniperTower.getRange(), SniperTower.getPath(), warning);
 					break;
 				}
 			}
@@ -201,7 +176,6 @@ public class Screen extends JPanel implements Runnable {
 		if(started==false) {
 			status = 1;
 			started=true;
-			delay=level.spawnSpeed;
 			}
 
 		// gameField= new GameField(level);
@@ -212,10 +186,9 @@ public class Screen extends JPanel implements Runnable {
 		long beginTimes = System.currentTimeMillis();
 		int frames = 0;
 		loadGame();
-		// System.out.println(gameField.stage.wave.id[4]);
 		System.out.println(frame.getWidth() + frame.getHeight());
-		// System.out.println(gameField.enemies[1].texturePath);
 		while (isRunning) {
+			Clock.update();
 			repaint();
 			update();
 			frames++;
@@ -225,11 +198,10 @@ public class Screen extends JPanel implements Runnable {
 				beginTimes = System.currentTimeMillis();
 			}
 
-			try {
-				Thread.sleep(2);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+			
+			  try { Thread.sleep(2); } catch (InterruptedException e) {
+			  e.printStackTrace(); }
+			 
 		}
 		System.out.print("STOP");
 		System.exit(0);
@@ -237,22 +209,28 @@ public class Screen extends JPanel implements Runnable {
 
 	public void update() {
 		if(status==1) {
-			//System.out.println(gameField.winStage);
-			if(gameField.endWave==true) {delay=level.newWaveSpeed;}
-			if(delay<=0) {gameField.spawning=true; delay=level.spawnSpeed;} else {
-				delay--; gameField.spawning=false;
-			}
+			if(Clock.getTotalTime()-gameField.timeLastWave>= level.newWaveSpeed*Clock.delta()) {
+			if(Clock.getTotalTime()-gameField.timeLastSpawn>=level.spawnSpeed*Clock.delta()) gameField.spawning=true;
+			else gameField.spawning=false;
+			} else gameField.spawning=false;
+			
 			gameField.spawn();
+			
 			for(Enemy e:gameField.enemiesList) {
-				if(e.active) e.run();
+				e.run();
+			}
+			for(int i=0; i<gameField.gameMaps.towerSize; i++) {
+				gameField.gameMaps.tower[i].checkEnemy();
 			}
 		}
+		if(user.player.health<=0) status=0;
 	}
 	
 	public void destroyTower() {
-			gameField.gameMaps.towerMap[(mousePosY-50)/40][(mousePosX-50)/40]=-1;
-			System.out.println("try destroy"+ (mousePosY-50)/40+" "+(mousePosX-50)/40);
-			System.out.println(gameField.gameMaps.towerMap[(mousePosY-50)/40][(mousePosX-50)/40]);
+		if(gameField.gameMaps.towerMap[(mousePosY-50)/40][(mousePosX-50)/40]>0) {
+			gameField.gameMaps.towerMap[(mousePosY-50)/40][(mousePosX-50)/40]=0;
+			gameField.gameMaps.map[(mousePosY-50)/40][(mousePosX-50)/40]=-1;
+			}
 	}
 	
 	public boolean isAble(int x, int y) {
@@ -260,6 +238,7 @@ public class Screen extends JPanel implements Runnable {
 		int indexY = (y - 50) / 40;
 		if (x > 50 && x < 1090 && y > 50 && y < 570) {
 			if (gameField.gameMaps.map[indexY][indexX] != 0) {
+				if(gameField.gameMaps.map[indexY][indexX] == -1) return true;
 				return false;
 			}
 			if (gameField.gameMaps.towerMap[indexY][indexX] != 0) {
