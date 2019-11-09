@@ -8,16 +8,17 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
+
+import javafx.animation.PauseTransition;
 import towerdefense.gameEntity.enemy.Enemy;
-import towerdefense.gameEntity.gameTile.Grass;
-import towerdefense.gameEntity.gameTile.MachineGunTower;
 import towerdefense.gameEntity.gameTile.Mountain;
+import towerdefense.gameEntity.gameTile.MachineGunTower;
+import towerdefense.gameEntity.gameTile.Rock;
 import towerdefense.gameEntity.gameTile.NormalTower;
 import towerdefense.gameEntity.gameTile.Road;
 import towerdefense.gameEntity.gameTile.SniperTower;
 import towerdefense.gameEntity.gameTile.Spawner;
 import towerdefense.gameEntity.gameTile.Target;
-import towerdefense.gameEntity.gameTile.Tower;
 
 public class Screen extends JPanel implements Runnable {
 	/**
@@ -49,8 +50,8 @@ public class Screen extends JPanel implements Runnable {
 		addKeyListener(keyHandler);
 		addMouseListener(mouseHandler);
 		addMouseMotionListener(mouseHandler);
-		thread.start();
 		setVisible(true);
+		thread.start();
 	}
 
 	private void draw(Graphics g, int x, int y, int range, String texturePath, Color color) {
@@ -61,6 +62,13 @@ public class Screen extends JPanel implements Runnable {
 	public void paintComponent(Graphics g) {
 		g.clearRect(0, 0, frame.getWidth(), frame.getHeight());
 		g.setColor(Color.red);
+//		switch(status ) {
+//		
+//		case 1:
+//		
+//		
+//		
+//		}
 		if (status == 0) {
 			g.setColor(Color.yellow);
 			g.fillRect(0, 0, frame.getWidth(), frame.getHeight());
@@ -68,7 +76,10 @@ public class Screen extends JPanel implements Runnable {
 			g.setColor(Color.red);
 			g.drawString("PRESS SPACE OR CLICK TO PLAY", 600, 600);
 
-		} else if (status == 1) {
+		}
+		
+		
+		if (status == 1) {
 			// Background
 
 			g.drawImage(new ImageIcon("res\\Background\\MainMenuBackground.jpg").getImage(), 0, 0, null);
@@ -79,18 +90,18 @@ public class Screen extends JPanel implements Runnable {
 			// ve map
 			for (int i = 0; i < 26; i++) {
 				for (int j = 0; j < 13; j++) {
-					g.drawImage(new ImageIcon(Grass.getPath()).getImage(), i * 40 + 50, j * 40 + 50, null);
+					g.drawImage(new ImageIcon(Mountain.getPath()).getImage(), i * 40 + 50, j * 40 + 50, null);
 					switch (gameField.gameMaps.map[j][i]) {
 					case -1: g.drawImage(new ImageIcon("res\\GameEntity\\GameTile\\Tower\\Destroyed.png").getImage(), i * 40 + 50, j * 40 + 50, null);
 						break;
 					case 1:
-						g.drawImage(new ImageIcon(Road.getPath()).getImage(), i * 40 + 50, j * 40 + 50, null);
+						g.drawImage(Road.getImage(), i * 40 + 50, j * 40 + 50, null);
 						break;
 					case 0:
-						g.drawImage(new ImageIcon(Grass.getPath()).getImage(), i * 40 + 50, j * 40 + 50, null);
+						g.drawImage(Mountain.getImage(), i * 40 + 50, j * 40 + 50, null);
 						break;
 					case -2:
-						g.drawImage(new ImageIcon(Mountain.getPath()).getImage(), i * 40 + 50, j * 40 + 50, null);
+						g.drawImage(Rock.getImage(), i * 40 + 50, j * 40 + 50, null);
 						break;
 					}
 				}
@@ -128,9 +139,9 @@ public class Screen extends JPanel implements Runnable {
 			for (int i = 200; i < 310; i += 40) {
 				g.drawRect(i, 600, 40, 40);
 				if (i == 200) {
-					g.drawImage(new ImageIcon(NormalTower.getPath()).getImage(), i, 600, null);
+					g.drawImage(NormalTower.getImage(), i, 600, null);
 				} else if (i == 250) {
-					g.drawImage(new ImageIcon(MachineGunTower.getPath()).getImage(), i, 600, null);
+					g.drawImage(MachineGunTower.getImage(), i, 600, null);
 				} else
 					g.drawImage(new ImageIcon(SniperTower.getPath()).getImage(), i, 600, null);
 				i += 10;
@@ -186,7 +197,6 @@ public class Screen extends JPanel implements Runnable {
 			started=true;
 			}
 
-		// gameField= new GameField(level);
 	}
 
 	public void run() {
@@ -197,7 +207,6 @@ public class Screen extends JPanel implements Runnable {
 		System.out.println(frame.getWidth() + frame.getHeight());
 		while (isRunning) {
 			Clock.update();
-			//System.out.println("totalTime"+ Clock.getTotalTime()+"  "+ Clock.delta());
 			repaint();
 			update();
 			frames++;
@@ -210,7 +219,6 @@ public class Screen extends JPanel implements Runnable {
 			
 			  try { Thread.sleep(2); } catch (InterruptedException e) {
 			  e.printStackTrace(); }
-			 
 		}
 		System.out.print("STOP");
 		System.exit(0);
@@ -222,9 +230,7 @@ public class Screen extends JPanel implements Runnable {
 			if(Clock.getTotalTime()-gameField.getTimeLastSpawn()>=level.spawnSpeed*Clock.deltaDelay()) gameField.setSpawning(true);
 			else gameField.setSpawning(false);
 			} else gameField.setSpawning(false);
-			
 			gameField.spawn();
-			
 			for(Enemy e:gameField.getEnemiesList()) {
 				e.run();
 			}
@@ -241,7 +247,6 @@ public class Screen extends JPanel implements Runnable {
 			gameField.gameMaps.towerMap[(mousePosY-50)/40][(mousePosX-50)/40]=-1;
 			gameField.gameMaps.map[(mousePosY-50)/40][(mousePosX-50)/40]=-1;
 			gameField.gameMaps.changePos.setPosition((mousePosY - 50) / 40,(mousePosX - 50) / 40);
-			System.out.println("change pos"+ gameField.gameMaps.changePos.x+"   "+gameField.gameMaps.changePos.y );
 			gameField.gameMaps.change=true;
 			}
 	}
@@ -335,7 +340,7 @@ public class Screen extends JPanel implements Runnable {
 				onHand = 0;
 			}
 			
-			if(mousePosX>=810&& mousePosX<=930) {
+			if(status==1&&mousePosX>=810&& mousePosX<=930) {
 				if(mousePosY>=600&&mousePosY<=680) {
 					Clock.speedUp();
 				}
