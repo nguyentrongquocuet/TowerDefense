@@ -3,8 +3,9 @@ package towerdefense.gameEntity.gameTile;
 
 
 import java.awt.Graphics;
-
+import static towerdefense.Clock.*;
 import javax.swing.ImageIcon;
+
 
 import towerdefense.GameField;
 import towerdefense.Position;
@@ -13,15 +14,14 @@ import towerdefense.gameEntity.enemy.Enemy;
 
 
 public abstract class Tower extends GameTile{
-	public GameField gameField;
-	public int shootSpeed;
-	public int damage;
-	public int bulletSpeed;
-	public int range;
-	public Bullet bullet;
-	public int cost;
-	public boolean firstTime=true;
-	public float currentTime;
+	float lastShoot=0f;
+	private GameField gameField;
+	private int shootSpeed;
+	private int damage;
+	private int bulletSpeed;
+	private int range;
+	private Bullet bullet;
+	private int cost;
 	public Tower(int damage, int bulletSpeed, int shootSpeed, int range, int cost, String path, String path2, GameField gameField) {
 		this.shootSpeed=shootSpeed;
 		this.gameField=gameField;
@@ -29,26 +29,35 @@ public abstract class Tower extends GameTile{
 		this.damage=damage;
 		this.bulletSpeed=bulletSpeed;
 		this.range=range;
-		this.bullet=new Bullet(bulletSpeed, shootSpeed, damage, range, path2);
+		this.bullet= new Bullet(bulletSpeed, shootSpeed, damage, range, path2);
 		this.texturePath=path;
 	}
-	public double distane(Position pos1, Position pos2) {
-		return Math.sqrt((pos1.x-pos2.x)*(pos1.x-pos2.x)+ (pos1.y-pos2.y)*(pos1.y-pos2.y));
+	
+	public Bullet getBullet() {
+		return bullet;
 	}
+
+	
 	public void checkEnemy() {
+		
+		if(getTotalTime()-lastShoot>=shootSpeed*deltaDelay()) {
 		for(Enemy enemy: gameField.enemiesList) {
-			if(distane(enemy.pos, pos)<range/2 && enemy.active && enemy.alive) {
-				//bullet.active=true;
+			if(pos.distance(enemy.pos)<range && enemy.active && enemy.alive) {
+				lastShoot=getTotalTime();
 				bullet.enemy=enemy;
-				bullet.move();
-				if(bullet.active==false) {bullet.pos.x = pos.x; bullet.pos.y=pos.y;}
+				bullet.readyToFire=true;
+				bullet.active=true;
+				if(bullet.pos.distance(pos)>range) bullet.active=false;
+				if(bullet.active==false) { bullet.pos.x = pos.x; bullet.pos.y=pos.y; bullet.enemy=null;}
 				return;
 			}
-		}
-}
+		}}
+		
+		bullet.move();
+	}
 		
 	public void draw(Graphics g) {
 		g.drawImage(new ImageIcon(texturePath).getImage(), (int)pos.x-20, (int)pos.y-20, null);
-		if(bullet.active) g.drawImage(new ImageIcon(bullet.texturePath).getImage(), (int)bullet.pos.x, (int)bullet.pos.y, null);
+		if(bullet.active) g.drawImage(new ImageIcon(bullet.texturePath).getImage(), (int)bullet.pos.x-6, (int)bullet.pos.y-6, null);
 	}
 }

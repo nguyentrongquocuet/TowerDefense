@@ -28,10 +28,12 @@ public abstract class Enemy implements GameEntity {
 	public Position pos;
 	public boolean alive;
 	public String texturePath;
-	int[] deltaPos= new int[2];
-	float distance=0f;
-	int mPosX;
-	int mPosY;
+	private int[] deltaPos= new int[2];
+	private float distance=0f;
+	private int mPosX;
+	private int mPosY;
+	
+	////////////////////////////////////////////////////////////////////////////////////////////////
 	public Enemy() {
 	}
 
@@ -47,8 +49,25 @@ public abstract class Enemy implements GameEntity {
 		this.reward = reward;
 		this.texturePath = texturePath;
 		pos = gameMaps.spawnerPosition;
-		mPosX=1;
-		mPosY=0;
+		mPosX=(int)gameMaps.getSpawnerMatrixPosition().x;
+		mPosY=(int)gameMaps.getSpawnerMatrixPosition().y;
+	}
+
+	
+	public int getReward() {
+		return reward;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public boolean isAlive() {
+		return alive;
+	}
+
+	public int getAmor() {
+		return armor;
 	}
 
 	public void update() {
@@ -63,7 +82,7 @@ public abstract class Enemy implements GameEntity {
 			alive = false;
 			player.health-=damage;
 		}
-		if(realTimeHealth<=0) {realTimeHealth=0; alive=false;}
+		if(realTimeHealth<=0) {realTimeHealth=0; alive=false; gameField.player.coin+=reward;}
 	}
 
 	public void setPos_1(Position pos) {
@@ -78,35 +97,29 @@ public abstract class Enemy implements GameEntity {
 		return texturePath;
 	}
 
-	public boolean canMove(int x, int y) {
+	private boolean canMove(int x, int y) {
 		if(x<13&&x>=0&&y<26&&y>=0) {
-			System.out.println("findding"+ x+ "   "+ y);
 			if(gameField.gameMaps.map[x][y]>0) return true;
 			}
 		return false;
 	}
 
-	public int matPos(float i) {
-		return ((int)i-70)/40;
-	}
-
-	public void move() {
+	private void move() {
 		if(!firstTime) {
-			pos.x+=deltaPos[0]*delta()*speed/15;
-			pos.y+=deltaPos[1]*delta()*speed/15;
-			distance+=deltaPos[0]*delta()*speed/15+deltaPos[1]*delta()*speed/15;
+			pos.x+=deltaPos[0]*deltaMove()*speed/15;
+			pos.y+=deltaPos[1]*deltaMove()*speed/15;
+			distance+=deltaPos[0]*deltaMove()*speed/15+deltaPos[1]*deltaMove()*speed/15;
 			} else {
 			findRoad(); firstTime=false;
 			distance=0;
 			}	
 	}
 
-	public void findRoad() {
+	private void findRoad() {
 		//i:, j:vi tri trong mang
 		if(canMove(mPosX, mPosY-1)) {
 			//left
 			if(!(deltaPos[0]==1&&deltaPos[1]==0)) {
-			System.out.println("can left");
 			deltaPos[0]=-1;
 			deltaPos[1]=0; return;
 			}
@@ -115,7 +128,6 @@ public abstract class Enemy implements GameEntity {
 		if(canMove(mPosX, mPosY+1)) {
 			//right
 			if(!(deltaPos[0]==-1&&deltaPos[1]==0)) {
-				System.out.println("can rigth");
 				deltaPos[0]=1;
 				deltaPos[1]=0; return;}
 		}
@@ -123,7 +135,6 @@ public abstract class Enemy implements GameEntity {
 		if(canMove(mPosX-1, mPosY)) {
 			//up
 			if(!(deltaPos[0]==0&&deltaPos[1]==1)) {
-				System.out.println("can up");
 				deltaPos[0]=0;
 				deltaPos[1]=-1; return;}
 		}
@@ -131,7 +142,6 @@ public abstract class Enemy implements GameEntity {
 		if(canMove(mPosX+1, mPosY)) {
 			//down
 			if(!(deltaPos[0]==0&&deltaPos[1]==-1)) {
-				System.out.println("can down");
 				deltaPos[0]=0;
 				deltaPos[1]=1; return;}
 		}

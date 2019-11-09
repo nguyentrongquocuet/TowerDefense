@@ -1,15 +1,13 @@
 package towerdefense;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
 
 
 public class GameStage {
-	int numberOfWave;
+	private int numberOfWave;
 	int stageNumber;
-	int waveNumber;
-	Wave wave;
+	private int waveNumber;
+	private Wave wave;
 	Level level;
 	ArrayList<Integer> stageEnemies;
 	public GameStage(Level lv) {
@@ -19,11 +17,7 @@ public class GameStage {
 		stageNumber=1;
 		waveNumber=1;
 	}
-	public void nextStage() {
-		stageNumber++;
-		waveNumber=1;
-	}
-	
+
 	public void buildStageEnemy() {
 		numberOfWave=stageNumber;
 		for(int i=waveNumber; i<=numberOfWave; i++) {
@@ -33,7 +27,6 @@ public class GameStage {
 				stageEnemies.add(wave.id.get(j));
 			}
 			wave.id.clear();
-			System.out.println("WAVE LIST NOW EMPTY "+ wave.id.isEmpty());
 		}
 
 	}

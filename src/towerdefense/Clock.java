@@ -7,7 +7,7 @@ public class Clock{
     static boolean firstTime=true;
     static boolean firstTimeDelay=true;
     static float pivok;
-
+    static int speedUp=1;
     public static float getDelta() {
         long delta= (int)(System.nanoTime()-lastFrame);
         lastFrame=System.nanoTime();
@@ -21,20 +21,21 @@ public class Clock{
             totalTimeFromBegin+=lastDelta;
             }
     }
-    public static float delta() {
-    	return lastDelta;
+    
+    public static float deltaMove() {
+    	return lastDelta*speedUp;
     }
+    
+    public static float deltaDelay() {
+    	return lastDelta/speedUp;
+    }
+    
     public static float getTotalTime() {
         return totalTimeFromBegin;
     }
     
-    public static boolean delay(float x) {
-    	if(firstTimeDelay) {
-    		firstTimeDelay=false;
-    		pivok=totalTimeFromBegin;
-    	} else {
-    		if(totalTimeFromBegin-pivok>x) {pivok= totalTimeFromBegin; return true;}
-    	}
-    	return false;
+    public static void speedUp() {
+    	speedUp=speedUp%4+1;
+    	System.out.println("speedup  "+ speedUp);
     }
 }

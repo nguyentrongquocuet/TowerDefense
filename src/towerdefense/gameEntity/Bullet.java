@@ -6,6 +6,7 @@ import towerdefense.Position;
 import towerdefense.gameEntity.enemy.Enemy;
 
 public class Bullet implements GameEntity{
+	public boolean readyToFire=false;
 	public String texturePath;
 	public GameMaps gameMaps;
 	public Enemy enemy;
@@ -15,7 +16,7 @@ public class Bullet implements GameEntity{
 	public int damage;
 	public int range;
 	public boolean active;
-	
+	Position stockPosition;
 	public Bullet(int bulletSpeed, int shootSpeed, int damage, int range, String path) {
 		this.shootSpeed=shootSpeed;
 		active=false;
@@ -34,18 +35,24 @@ public class Bullet implements GameEntity{
 		pos.setPosition(x, y);
 	}
 	
+	public void setStockPosition(Position stockPosition) {
+		this.stockPosition = stockPosition;
+	}
+
 	public void move() {
-		System.out.println("shooting "+ getTotalTime());
-		active=true;
-			if(delay(10*shootSpeed*delta())) {
-				pos.x+=enemy.pos.x-pos.x;
-				pos.y+=enemy.pos.y-pos.y;
-			} else {
-				active=false;
-			}
-		if(pos.equals(enemy.pos)) {
+		
+		if(active&&readyToFire) {
+		pos.x+=(enemy.pos.x-pos.x)*deltaMove()/bulletSpeed;
+		pos.y+=(enemy.pos.y-pos.y)*deltaMove()/bulletSpeed;
+		
+		if(pos.distance(enemy.pos)<=10) {
 			enemy.realTimeHealth-=damage;
 			active=false;
+			readyToFire=false;
+			return;
+		}
+		
+		if(stockPosition.distance(enemy.pos)>range) {active=false; readyToFire=false; return;}
 		}
 	}
 

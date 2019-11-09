@@ -1,6 +1,7 @@
 package towerdefense;
 
 import java.util.ArrayList;
+
 import towerdefense.gameEntity.enemy.BossEnemy;
 import towerdefense.gameEntity.enemy.Enemy;
 import towerdefense.gameEntity.enemy.NormalEnemy;
@@ -8,51 +9,67 @@ import towerdefense.gameEntity.enemy.SmallerEnemy;
 import towerdefense.gameEntity.enemy.TankerEnemy;
 
 public class GameField {
-	float timeLastWave;
-	float timeLastSpawn;
-	Player player;
-	boolean endStage;
-	int frame;
-	boolean endWave;
-	DelayFrame delayFrame;
+	private float timeLastWave=0f;
+	private float timeLastSpawn=0f;
+	public Player player;
+	private boolean endStage;
+	private boolean endWave;
 	public GameMaps gameMaps;
-	boolean spawning=true;
-	int index;
-	int cur=0;
-	boolean winStage;
-	int stageNumber;
-	Level level;
-	Wave newWave;
-	int waveNumber;
-	GameStage stage;
+	private boolean spawning=true;
+	private int index;
+	private boolean winStage;
+	private int stageNumber;
+	private Level level;
+	private int waveNumber;
+	private GameStage stage;
 	int pivok;
 	public ArrayList<Enemy> enemiesList;
 	public GameField(Level lv,Player player) {
 		this.player=player;
 		index=0;
-		frame=0;
-		delayFrame=new DelayFrame();
 		stageNumber=0;
 		enemiesList= new ArrayList<Enemy>();
 		level=lv;
 		stage=new GameStage(lv);
 		gameMaps= new GameMaps(this);
-		newWave= new Wave(lv);
 		pivok=level.startEnemies;
 		nextStage();
 	}
 	
-	public void spawn() {
-			if(spawning && index<enemiesList.size()) {
-				timeLastSpawn=Clock.getTotalTime();
-				System.out.println("LIST"+enemiesList.size()+" SPWANING");
-				enemiesList.get(index).active=true;
-				enemiesList.get(index).alive=true;
-				index++;
-			}
-			update();
+	public float getTimeLastWave() {
+		return timeLastWave;
+	}
+
+	public float getTimeLastSpawn() {
+		return timeLastSpawn;
+	}
+
+	public int getIndex() {
+		return index;
+	}
+
+	public boolean isWinStage() {
+		return winStage;
+	}
+
+	public ArrayList<Enemy> getEnemiesList() {
+		return enemiesList;
+	}
+
+	public void setSpawning(boolean spawning) {
+		this.spawning = spawning;
 	}
 	
+	public void spawn() {
+		if(spawning && index<enemiesList.size()) {
+			timeLastSpawn=Clock.getTotalTime();
+			System.out.println("LIST"+enemiesList.size()+" SPWANING");
+			enemiesList.get(index).active=true;
+			enemiesList.get(index).alive=true;
+			index++;
+		}
+		update();
+}
 	public void buildGameEnemy() {
 		for(int i=0; i< stage.stageEnemies.size(); i++) {
 			switch (stage.stageEnemies.get(i)) {
@@ -72,8 +89,6 @@ public class GameField {
 		index=0;
 		waveNumber=1;
 		spawning=true;
-		//endStage=false;
-		//winStage=false;
 		enemiesList.clear();
 		pivok=level.startEnemies;
 		stageNumber++;
@@ -84,7 +99,11 @@ public class GameField {
 	}
 	public void update() {
 		gameMaps.buildTowerMap();
-		if(index==pivok) {endWave=true; waveNumber++; pivok+=level.startEnemies+(waveNumber-1)*level.enemiesPerWaveUp; timeLastWave =Clock.getTotalTime();}
+		if(index==pivok) {endWave=true;
+		waveNumber++; 
+		pivok+=level.startEnemies+(waveNumber-1)*level.enemiesPerWaveUp; 
+		timeLastWave=Clock.getTotalTime();
+		}
 		else endWave=false;
 		if(endWave && index==enemiesList.size()) {
 			endStage= true; 

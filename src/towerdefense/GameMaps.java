@@ -12,6 +12,9 @@ import towerdefense.gameEntity.gameTile.SniperTower;
 import towerdefense.gameEntity.gameTile.Tower;
 
 public class GameMaps {
+	private boolean first=true;
+	public boolean change=false;
+	public Position changePos=new Position();
 	GameField gameField;
 	int towerSize=0;
 	public int[][] map;
@@ -21,8 +24,7 @@ public class GameMaps {
 	public Position targetPosition;
 	public Position spawnerMatrixPosition;
 	public Position targetMatrixPosition;
-	public Position road;
-
+	
 	public GameMaps(GameField gameField) {
 		this.gameField=gameField;
 		map = new int[13][26];
@@ -34,7 +36,39 @@ public class GameMaps {
 		findSpecialPosition();
 	}
 	
-	public boolean loadData(String filePath, int[][] arr) {
+	public int getTowerSize() {
+		return towerSize;
+	}
+
+	public int[][] getMap() {
+		return map;
+	}
+
+	public int[][] getTowerMap() {
+		return towerMap;
+	}
+
+	public Tower[] getTower() {
+		return tower;
+	}
+
+	public Position getSpawnerPosition() {
+		return spawnerPosition;
+	}
+
+	public Position getTargetPosition() {
+		return targetPosition;
+	}
+
+	public Position getSpawnerMatrixPosition() {
+		return spawnerMatrixPosition;
+	}
+
+	public Position getTargetMatrixPosition() {
+		return targetMatrixPosition;
+	}
+
+	private boolean loadData(String filePath, int[][] arr) {
 		Path path = Paths.get(filePath);
 		Charset charset = Charset.forName("US-ASCII");
 		try (BufferedReader reader = Files.newBufferedReader(path, charset)) {
@@ -57,7 +91,7 @@ public class GameMaps {
 		return true;
 	}
 	
-	public void findSpecialPosition() {
+	private void findSpecialPosition() {
 		for (int i = 0; i < 13; i++) {
 			for (int j = 0; j < 26; j++) {
 				if (this.map[i][j] == 3) {
@@ -71,24 +105,41 @@ public class GameMaps {
 		}
 	}
 	
+	public void buildTower(int i, int j) {
+		switch (towerMap[i][j]) {
+		case -1 : for(int k=0; k<towerSize; k++) {
+			if(tower[k]!=null&&tower[k].pos.equals(new Position(j*40+70, i*40+70))) { tower[k]=null; System.out.println("change sucess"); break;}
+		}
+		break;
+		case 1:
+			tower[towerSize]=new NormalTower(new Position(j*40+70, i*40+70), gameField); towerSize++;
+			break;
+		case 2:
+			tower[towerSize]=new MachineGunTower(new Position(j*40+70, i*40+70), gameField); towerSize++;
+			break;
+		case 3:
+			tower[towerSize]=new SniperTower(new Position(j*40+70, i*40+70), gameField); towerSize++;
+			break;
+		}
+	}
+	
 	public void buildTowerMap() {
+		if(first) {
+		first=false;
 		towerSize=0;
 		for (int i = 0; i < 13; i++) {
 			for (int j = 0; j < 26; j++) {
-				switch (towerMap[i][j]) {
-				default : tower[towerSize]=null; break;
-				case 1:
-					tower[towerSize]=new NormalTower(new Position(j*40+70, i*40+70), gameField); towerSize++;
-					break;
-				case 2:
-					tower[towerSize]=new MachineGunTower(new Position(j*40+70, i*40+70), gameField); towerSize++;
-					break;
-				case 3:
-					tower[towerSize]=new SniperTower(new Position(j*40+70, i*40+70), gameField); towerSize++;
-					break;
-				}
+				buildTower(i, j);
 			}
 		}
+	} else {
+		if(change) {
+			buildTower((int)changePos.x, (int)changePos.y);
+			change=false;
+		}
+	}
+	
+		
 	}
 	
 }

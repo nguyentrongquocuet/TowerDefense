@@ -15,7 +15,8 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// this.mouseEffect.moved(e);
+		//this.mouseEffect.moved(e);
+		//this.mouseEffect.down(e);
 	}
 
 	@Override
@@ -35,12 +36,12 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		this.mouseEffect.down(e);
+		//this.mouseEffect.down(e);
 	}
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		this.mouseEffect.moved(e);
+		//this.mouseEffect.moved(e);
 	}
 
 	@Override

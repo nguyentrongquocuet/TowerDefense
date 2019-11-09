@@ -1,18 +1,16 @@
 package towerdefense;
 
 import java.util.ArrayList;
-import java.util.PriorityQueue;
-import java.util.Queue;
 import java.util.Random;
 
 public class Wave {
-	int boss;
-	Level level;
-	int normal;
-	int small;
-	int tanker;
+	private int boss;
+	private Level level;
+	private int normal;
+	private int small;
+	private int tanker;
 	int waveNumber;
-	int numberOfEnemies;// khong co boss
+	private int numberOfEnemies;// khong co boss
 	ArrayList<Integer> id;
 
 	public Wave(Level lv) {
@@ -24,25 +22,24 @@ public class Wave {
 	public void buildWaveEnemy() {
 		numberOfEnemies=level.startEnemies+((waveNumber-1)*level.enemiesPerWaveUp);
 		Random rd= new Random();
-		if(this.numberOfEnemies>=10) this.boss=1;
-		this.small= (int)(this.numberOfEnemies*(rd.nextInt(1)+1)/4);
-		this.tanker= (int)((rd.nextInt(2)+1) * this.numberOfEnemies /5);
-		this.normal= numberOfEnemies-this.tanker-this.small-this.boss;
-		for(int i=0; i<this.numberOfEnemies; i++) {
-			if(i<this.small) {
-				this.id.add(1);
+		if(numberOfEnemies>=10) boss=1;
+		small= (int)(numberOfEnemies*(rd.nextInt(1)+1)/4);
+		tanker= (int)((rd.nextInt(2)+1) * numberOfEnemies /5);
+		normal= numberOfEnemies-tanker-small-boss;
+		for(int i=0; i<numberOfEnemies; i++) {
+			if(i<small) {
+				id.add(1);
 				continue;
 			}
-			if(i>=this.small&& i<this.small+this.normal) {
-				this.id.add(2); 
+			if(i>=small&& i<small+normal) {
+				id.add(2); 
 				continue;
 			}
-			if(i>=this.small+this.normal&&i<this.small+this.normal+this.tanker) {
-				this.id.add(3);
+			if(i>=small+normal&&i<small+normal+tanker) {
+				id.add(3);
 				continue;
-			}else {this.id.add(4); continue;}
-			//enemies[i].pos=new GameMaps().spawnerPosition;
+			}else {id.add(4); continue;}
 			}
-		System.out.println("WAVE BUILD COMPLETE, WE HAVE "+this.boss+ " "+this.normal+ " "+this.tanker+" "+this.small);
+		System.out.println("WAVE BUILD COMPLETE, WE HAVE "+boss+ " "+normal+ " "+tanker+" "+small);
 
 	}}
