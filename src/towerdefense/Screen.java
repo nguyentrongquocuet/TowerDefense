@@ -3,13 +3,16 @@
 package towerdefense;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.event.MouseEvent;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
-import javafx.animation.PauseTransition;
+import com.sun.xml.internal.ws.api.config.management.policy.ManagementAssertion.Setting;
+
 import towerdefense.gameEntity.enemy.Enemy;
 import towerdefense.gameEntity.gameTile.Mountain;
 import towerdefense.gameEntity.gameTile.MachineGunTower;
@@ -29,7 +32,7 @@ public class Screen extends JPanel implements Runnable {
 	private boolean started=false;
 	private int fps = 0;
 	public boolean isRunning = false;
-	public int status;// status=0:ingame, 1: pause
+	public int status=0;// status=1:ingame, 0: pause
 	Frame frame;
 	private User user;
 	private Level level;
@@ -40,7 +43,11 @@ public class Screen extends JPanel implements Runnable {
 	private int mousePosY = 0;
 	Color warning = new Color(255, 16, 0, 90);
 	Color exepting = new Color(64, 64, 64, 64);
-
+	Image winImage= new ImageIcon("res\\Background\\WinStage.jpg").getImage();
+	Image lose= new ImageIcon("res\\Background\\Lose.jpg").getImage();
+	Image levelSelect= new ImageIcon("res\\Background\\WinStage.jpg").getImage();
+	Image pauseMenu= new ImageIcon("res\\Background\\PauseMenu.jpg").getImage();
+	
 	// ham
 	public Screen(Frame frame) {
 		this.frame = frame;
@@ -59,29 +66,75 @@ public class Screen extends JPanel implements Runnable {
 		g.setColor(color);
 		g.fillOval(x - range, y - range, range*2, range*2);
 	}
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	public void paintComponent(Graphics g) {
 		g.clearRect(0, 0, frame.getWidth(), frame.getHeight());
 		g.setColor(Color.red);
-//		switch(status ) {
-//		
-//		case 1:
-//		
-//		
-//		
-//		}
-		if (status == 0) {
-			g.setColor(Color.yellow);
-			g.fillRect(0, 0, frame.getWidth(), frame.getHeight());
-			g.drawImage(new ImageIcon("res\\Background\\MainMenuBackground.jpg").getImage(), 0, 0, null);
-			g.setColor(Color.red);
-			g.drawString("PRESS SPACE OR CLICK TO PLAY", 600, 600);
+		/*
+		 * switch(status ) {
+		 * 
+		 * case 0: start game scence startScense
+		 * case 1: in game 
+		 * sase 2: pause game: included setting: level(sound / maybe)...
+		 * 
+		 * 
+		 * 
+		 * 
+		 * }
+		 */
+		
+		
+		if(status ==1) inGame(g);
+		if(status ==0) startScene(g);
+		if(status ==2) winScense(g);
+		if(status ==3) loseScense(g);
+		if(status ==4) pauseGameMenu(g);
+		if(status ==5) Setting(g);
+		
 
-		}
+	}
+
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	private void pauseGameMenu(Graphics g) {
+		// TODO Auto-generated method stub
+		g.drawImage(pauseMenu, 0, 0, null);
 		
+	}
+	
+	private void Setting(Graphics g) {
+		// TODO Auto-generated method stub
 		
+	}
+	
+	private void winScense(Graphics g) {
+		// TODO Auto-generated method stub
+		// win, next stage
+		g.drawImage(winImage, 0, 0, null);
+	}
+	
+	private void loseScense(Graphics g) {
+		//thua 
+		g.drawImage(lose, 0, 0, null);
+	}
+	
+	private void startScene(Graphics g) {
+		if(level==null) status=5;
+		else {
+		g.setColor(Color.yellow);
+		g.fillRect(0, 0, frame.getWidth(), frame.getHeight());
+		g.drawImage(new ImageIcon("res\\Background\\MainMenuBackground.jpg").getImage(), 0, 0, null);
+		g.setColor(Color.red);
+		g.drawString("PRESS SPACE OR CLICK TO PLAY", 600, 600);
+	}}
+		
+	private void inGame(Graphics g) {
 		if (status == 1) {
 			// Background
-
 			g.drawImage(new ImageIcon("res\\Background\\MainMenuBackground.jpg").getImage(), 0, 0, null);
 
 			g.setColor(Color.YELLOW);
@@ -124,8 +177,11 @@ public class Screen extends JPanel implements Runnable {
 				if(gameField.gameMaps.tower[i]!=null)
 				gameField.gameMaps.tower[i].draw(g);
 			}
-
-			g.drawImage(new ImageIcon("res\\Background\\Fill.png").getImage(), 0, 0, null);
+		
+			/*ve filll
+			 * g.drawImage(new ImageIcon("res\\Background\\Fill.png").getImage(), 0, 0,
+			 * null);
+			 */
 			
 			//display speedUp
 			g.setColor(Color.YELLOW);
@@ -133,6 +189,8 @@ public class Screen extends JPanel implements Runnable {
 			if(Clock.speedUp!=4) {
 				g.drawImage(new ImageIcon("res\\Background\\SpeedUp.png").getImage(), 810, 600, null);
 			} else g.drawImage(new ImageIcon("res\\Background\\nonSpeedUp.png").getImage(), 810, 600, null);
+			
+			//display tower interview
 			
 			// display towerslist
 			g.setColor(Color.YELLOW);
@@ -176,11 +234,44 @@ public class Screen extends JPanel implements Runnable {
 					break;
 				}
 			}
-		}
+			//
+			if(onHand!=0) {
+				g.setColor(Color.YELLOW);
+				g.drawRect(1130, 50, 160, 160);
+				g.setFont(new Font("TimesRoman", Font.BOLD, 20));
+				switch(onHand) {
+				case 1: 
+					g.drawString("NORMAL TOWER", 1130, 250);
+					g.drawImage(NormalTower.getInterview(), 1130, 50, null);
+					g.drawString("Cost "+ NormalTower.getCost(), 1130, 290);
+					g.drawString("Damage "+ NormalTower.getDamage(), 1130, 330);
+					g.drawString("Range "+ NormalTower.getRange(), 1130, 370);
+					g.drawString("Shoot Speed "+ NormalTower.getShootSpeed(),1130 , 410);
+					
+					break; 
+				case 2: g.drawString("MACHINE GUN TOWER", 1130, 250);
+				g.drawImage(MachineGunTower.getInterview(), 1130, 50, null);
+				g.drawString("Cost "+ MachineGunTower.getCost(), 1130, 290);
+				g.drawString("Damage "+ MachineGunTower.getDamage(), 1130, 330);
+				g.drawString("Range "+ MachineGunTower.getRange(), 1130, 370);
+				g.drawString("Shoot Speed "+ MachineGunTower.getShootSpeed(),1130 , 410);
+					break;
+				case 3: g.drawString("SNIPER TOWER", 1130, 250);
+				g.drawImage(SniperTower.getInterview(), 1130, 50, null);
+				g.drawString("Cost "+ SniperTower.getCost(), 1130, 290);
+				g.drawString("Damage "+ SniperTower.getDamage(), 1130, 330);
+				g.drawString("Range "+ SniperTower.getRange(), 1130, 370);
+				g.drawString("Shoot Speed "+ SniperTower.getShootSpeed(),1130 , 410);
+					break;
+				}
+				
+			}
+			
 		g.setColor(Color.YELLOW);
 		g.drawString(fps + "", 10, 20);
+		}
 	}
-
+	
 	// vao man hinh cho(maybe menu)
 	public void loadGame() {
 		isRunning = true;
@@ -204,7 +295,7 @@ public class Screen extends JPanel implements Runnable {
 		long beginTimes = System.currentTimeMillis();
 		int frames = 0;
 		loadGame();
-		System.out.println(frame.getWidth() + frame.getHeight());
+		//System.out.println(frame.getWidth() + frame.getHeight());
 		while (isRunning) {
 			Clock.update();
 			repaint();
@@ -215,8 +306,6 @@ public class Screen extends JPanel implements Runnable {
 				frames = 0;
 				beginTimes = System.currentTimeMillis();
 			}
-
-			
 			  try { Thread.sleep(2); } catch (InterruptedException e) {
 			  e.printStackTrace(); }
 		}
@@ -239,16 +328,18 @@ public class Screen extends JPanel implements Runnable {
 				if(gameField.gameMaps.tower[i]!=null)gameField.gameMaps.tower[i].checkEnemy();
 			}
 		}
-		if(user.player.health<=0) status=0;
+		if(gameField.isWinStage()) status=2;
+		if(user.player.health<=0) status=3;
 	}
 	
 	public void destroyTower() {
+		if(status ==1) {
 		if(gameField.gameMaps.towerMap[(mousePosY-50)/40][(mousePosX-50)/40]>0) {
 			gameField.gameMaps.towerMap[(mousePosY-50)/40][(mousePosX-50)/40]=-1;
 			gameField.gameMaps.map[(mousePosY-50)/40][(mousePosX-50)/40]=-1;
 			gameField.gameMaps.changePos.setPosition((mousePosY - 50) / 40,(mousePosX - 50) / 40);
 			gameField.gameMaps.change=true;
-			}
+			}}
 	}
 	
 	public boolean isAble(int x, int y) {
@@ -269,7 +360,7 @@ public class Screen extends JPanel implements Runnable {
 	}
 
 	public void placeTower(int x, int y, int onHand) {
-		if (isAble(x, y)) {
+		if (isAble(x, y)&&status==1) {
 			gameField.gameMaps.towerMap[(int) (y - 50) / 40][(int) (x - 50) / 40] = onHand;
 			switch (onHand) {
 			case 1:
@@ -347,6 +438,69 @@ public class Screen extends JPanel implements Runnable {
 			}
 			
 			Effect(e);
+		}
+
+		public void choose() {
+			//bat dau tu 0
+			if(Math.abs(mousePosX-668)<=125) {
+				int indexY= (mousePosY-210)/90;
+				if(indexY>=5) return;
+				else {
+					switch (status) {
+					case 0:
+						switch (indexY) {
+						case 0: //new game
+							
+						break;
+						case 1://load game
+							break;
+						case 2://options
+							break;
+						case 4:
+							break;//exit
+						}
+						break;
+					case 2:
+						switch (indexY) {
+						case 0: //
+							break;
+						case 1://continue nextstage
+							break;
+						case 2://
+							break;
+						case 4:
+							break;//return main menu
+						}
+						break;
+					case 3:
+						switch (indexY) {
+						case 0: //
+							break;
+						case 1://replay
+							break;
+						case 2://
+							break;
+						case 4:
+							break;//to main menu
+						}
+						break;
+					case 4:
+						switch (indexY) {
+						case 0: //continue
+							break;
+						case 1://
+							break;
+						case 2://
+							break;
+						case 4:
+							break;//to main menu
+						}
+						break;
+					case 5:
+					}
+				}
+			}
+			
 		}
 	}
 

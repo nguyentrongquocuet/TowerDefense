@@ -82,7 +82,6 @@ public class GameField {
 	}
 
 	public void nextStage() {
-		System.out.println("winnnstaff" + winStage);
 		winStage=false;
 		endStage=false;
 		endWave=true;
@@ -98,6 +97,7 @@ public class GameField {
 		System.out.println("STAGE NUMBER" + stage.stageNumber);
 	}
 	public void update() {
+		
 		gameMaps.buildTowerMap();
 		if(index==pivok) {endWave=true;
 		waveNumber++; 
@@ -110,13 +110,15 @@ public class GameField {
 			System.out.println("ENDSTAGE");
 			}
 		winStage(); 
-		if(winStage) { System.out.println("WIN STAGE "+ stageNumber); nextStage();}
+		if(winStage) { System.out.println("WIN STAGE "+ stageNumber);}
 	}
+	
 	public void winStage() {
 		if(endStage==true) {
 			winStage=true;
 		for(Enemy e: enemiesList) {
 			if(e.alive) {winStage =false; return;}
 		}} else winStage=false;
-	}
+	
+		}
 }

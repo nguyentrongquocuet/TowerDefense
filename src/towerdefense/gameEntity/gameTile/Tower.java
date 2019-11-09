@@ -16,12 +16,12 @@ import towerdefense.gameEntity.enemy.Enemy;
 public abstract class Tower extends GameTile{
 	float lastShoot=0f;
 	private GameField gameField;
-	private int shootSpeed;
-	private int damage;
-	private int bulletSpeed;
+	public int shootSpeed;
+	public int damage;
+	public int bulletSpeed;
 	private int range;
 	private Bullet bullet;
-	private int cost;
+	public int cost;
 	public Tower(int damage, int bulletSpeed, int shootSpeed, int range, int cost, String path, String path2, GameField gameField) {
 		this.shootSpeed=shootSpeed;
 		this.gameField=gameField;

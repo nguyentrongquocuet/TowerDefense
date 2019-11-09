@@ -17,6 +17,7 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
 	public void mouseClicked(MouseEvent e) {
 		//this.mouseEffect.moved(e);
 		//this.mouseEffect.down(e);
+		mouseEffect.choose();
 	}
 
 	@Override
