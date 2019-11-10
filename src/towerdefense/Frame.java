@@ -6,22 +6,21 @@ public class Frame extends JFrame {
     /**
 	 * 
 	 */
+	public  JFrame jFrame;
+	Screen screen;
 	public static void main(String[] args) {
-        new Frame();}
+       new Frame();
+	}
     public Frame(){
-    	new JFrame();
+    	jFrame=new JFrame();
     	//this.setSize(1300, 740);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    	this.setExtendedState(MAXIMIZED_BOTH);
-        this.setUndecorated(true);
-        this.setResizable(false);
-        this.setTitle("TowerDefense");
-        //this.setLocationRelativeTo(null);
-        Screen screen= new Screen(this);
-        this.add(screen);
-        this.setVisible(true);
-        
-        
-
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    	setExtendedState(MAXIMIZED_BOTH);
+        setUndecorated(true);
+        setResizable(false);
+        setTitle("TowerDefense");
+        screen= new Screen(this);
+        add(screen);
+        setVisible(true);
 }
 }

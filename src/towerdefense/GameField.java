@@ -2,11 +2,14 @@ package towerdefense;
 
 import java.util.ArrayList;
 
+
 import towerdefense.gameEntity.enemy.BossEnemy;
 import towerdefense.gameEntity.enemy.Enemy;
 import towerdefense.gameEntity.enemy.NormalEnemy;
 import towerdefense.gameEntity.enemy.SmallerEnemy;
 import towerdefense.gameEntity.enemy.TankerEnemy;
+import towerdefense.gameEntity.gameTile.Spawner;
+import towerdefense.gameEntity.gameTile.Target;
 
 public class GameField {
 	private float timeLastWave=0f;
@@ -62,6 +65,7 @@ public class GameField {
 	
 	public void spawn() {
 		if(spawning && index<enemiesList.size()) {
+			System.out.println("index "+ index);
 			timeLastSpawn=Clock.getTotalTime();
 			System.out.println("LIST"+enemiesList.size()+" SPWANING");
 			enemiesList.get(index).active=true;
@@ -71,6 +75,7 @@ public class GameField {
 		update();
 }
 	public void buildGameEnemy() {
+		System.out.println("stage size "+ stage.stageEnemies.size());
 		for(int i=0; i< stage.stageEnemies.size(); i++) {
 			switch (stage.stageEnemies.get(i)) {
 			case 1: enemiesList.add(new SmallerEnemy(player, this)); break;
@@ -79,13 +84,14 @@ public class GameField {
 			case 4: enemiesList.add(new BossEnemy(player, this)); break;
 			}
 		}
+		stage.stageEnemies.clear();
 	}
 
 	public void nextStage() {
+		index=0;
 		winStage=false;
 		endStage=false;
 		endWave=true;
-		index=0;
 		waveNumber=1;
 		spawning=true;
 		enemiesList.clear();
@@ -99,17 +105,19 @@ public class GameField {
 	public void update() {
 		gameMaps.buildTowerMap();
 		if(index==pivok) {endWave=true;
-		waveNumber++; 
+		waveNumber++;
 		pivok+=level.startEnemies+(waveNumber-1)*level.enemiesPerWaveUp; 
 		timeLastWave=Clock.getTotalTime();
+		System.out.println("end wave");
 		}
 		else endWave=false;
+		
 		if(endWave && index==enemiesList.size()) {
 			endStage= true; 
 			System.out.println("ENDSTAGE");
 			}
 		winStage(); 
-		if(winStage) { System.out.println("WIN STAGE "+ stageNumber);}
+		if(winStage) {System.out.println("WIN STAGE "+ stageNumber);}
 	}
 	
 	public void winStage() {

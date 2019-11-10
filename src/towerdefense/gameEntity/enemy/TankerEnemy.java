@@ -5,7 +5,7 @@ import towerdefense.Player;
 
 public class TankerEnemy extends Enemy{
 	 public TankerEnemy(Player player, GameField gameField) {
-		 super(150, 40, 0.8f, 15,  70, "res\\GameEntity\\Enemy\\TankerEnemy.png");
+		 super(150, 40, 0.8f, 15, 40, "res\\GameEntity\\Enemy\\TankerEnemy.png");
 		 this.player=player;
 		 this.gameField=gameField;
 	 }

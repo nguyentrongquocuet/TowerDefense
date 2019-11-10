@@ -5,7 +5,7 @@ import towerdefense.Player;
 
 public class NormalEnemy extends Enemy{
 	public NormalEnemy(Player player, GameField gameField) {
-		super(100, 20, 1f, 15, 30, "res\\GameEntity\\Enemy\\NormalEnemy.png");
+		super(100, 20, 1f, 15, 25, "res\\GameEntity\\Enemy\\NormalEnemy.png");
 		this.player=player;
 		this.gameField=gameField;
 	}

@@ -13,7 +13,7 @@ import javax.swing.JPanel;
 
 
 import towerdefense.gameEntity.enemy.Enemy;
-import towerdefense.gameEntity.gameTile.Mountain;
+import towerdefense.gameEntity.gameTile.Grass;
 import towerdefense.gameEntity.gameTile.MachineGunTower;
 import towerdefense.gameEntity.gameTile.Rock;
 import towerdefense.gameEntity.gameTile.NormalTower;
@@ -53,6 +53,7 @@ public class Screen extends JPanel implements Runnable {
 	Image pauseIcon= new ImageIcon("res\\Background\\Pause.png").getImage();
 	Image background= new ImageIcon("res\\Background\\BackGround.jpg").getImage();
 	Image mainMenu= new ImageIcon("res\\Background\\MainMenu.png").getImage();
+	Image panel= new ImageIcon("res\\Background\\Panel.png").getImage();
 	
 	// ham
 	public Screen(Frame frame) {
@@ -168,7 +169,7 @@ public class Screen extends JPanel implements Runnable {
 			// ve map
 			for (int i = 0; i < 26; i++) {
 				for (int j = 0; j < 13; j++) {
-					g.drawImage(new ImageIcon(Mountain.getPath()).getImage(), i * 40 + 50, j * 40 + 50, null);
+					g.drawImage(new ImageIcon(Grass.getPath()).getImage(), i * 40 + 50, j * 40 + 50, null);
 					switch (gameField.gameMaps.map[j][i]) {
 					case -1: g.drawImage(new ImageIcon("res\\GameEntity\\GameTile\\Tower\\Destroyed.png").getImage(), i * 40 + 50, j * 40 + 50, null);
 						break;
@@ -176,7 +177,7 @@ public class Screen extends JPanel implements Runnable {
 						g.drawImage(Road.getImage(), i * 40 + 50, j * 40 + 50, null);
 						break;
 					case 0:
-						g.drawImage(Mountain.getImage(), i * 40 + 50, j * 40 + 50, null);
+						g.drawImage(Grass.getImage(), i * 40 + 50, j * 40 + 50, null);
 						break;
 					case -2:
 						g.drawImage(Rock.getImage(), i * 40 + 50, j * 40 + 50, null);
@@ -185,6 +186,9 @@ public class Screen extends JPanel implements Runnable {
 				}
 			}
 			
+//			g.drawImage(new ImageIcon(Spawner.getPath()).getImage(), (int)gameField.gameMaps.getSpawner().pos.x - 20,
+//					(int)gameField.gameMaps.getSpawner().pos.y - 20, null);
+			gameField.gameMaps.getSpawner().draw(g);
 			// ve quai
 			for (Enemy enemy:gameField.getEnemiesList()) {
 				if(enemy.active&&enemy.alive) {
@@ -192,11 +196,9 @@ public class Screen extends JPanel implements Runnable {
 				}
 			}
 			//ve spawner va target
-			g.drawImage(new ImageIcon(Spawner.getPath()).getImage(), (int)gameField.gameMaps.getSpawnerPosition().x - 32,
-					(int)gameField.gameMaps.getSpawnerPosition().y - 32, null);
-			g.drawImage(new ImageIcon(Target.getPath()).getImage(), (int)gameField.gameMaps.getTargetPosition().x - 32,
-					(int)gameField.gameMaps.getTargetPosition().y - 32, null);
-			
+			//g.drawImage(new ImageIcon(Target.getPath()).getImage(), (int)gameField.gameMaps.getTarget().pos.x - 32,
+				//	(int)gameField.gameMaps.getTarget().pos.y - 32, null);
+			gameField.gameMaps.getTarget().draw(g);
 
 			// g.setColor(null); ve thap
 			for(int i=0; i<gameField.gameMaps.getTowerSize(); i++) {
@@ -211,7 +213,6 @@ public class Screen extends JPanel implements Runnable {
 			
 			//display speedUp
 			g.setColor(Color.YELLOW);
-			g.drawRect(810, 600, 120, 80);
 			if(Clock.speedUp!=4) {
 				g.drawImage(canSpeedUp, 810, 600, null);
 			} else g.drawImage(cantSpeedUp, 810, 600, null);
@@ -220,7 +221,7 @@ public class Screen extends JPanel implements Runnable {
 			// display towerslist
 			g.setColor(Color.YELLOW);
 			for (int i = 200; i < 310; i += 40) {
-				g.drawRect(i, 600, 40, 40);
+				g.drawImage(Grass.getImage(), i, 600, null);
 				if (i == 200) {
 					g.drawImage(NormalTower.getImage(), i, 600, null);
 				} else if (i == 250) {
@@ -232,8 +233,8 @@ public class Screen extends JPanel implements Runnable {
 			
 			// display health and coin
 			g.setColor(Color.YELLOW);
-			g.drawRect(50, 600, 120, 40);
-			g.drawRect(50, 640, 120, 40);
+			g.drawImage(panel,50, 600,null);
+			g.drawImage(panel,50, 640,null);
 			g.drawString("Health: " + user.player.health, 70, 625);
 			g.drawString("Coin: " + user.player.coin, 70, 665);
 
@@ -262,7 +263,6 @@ public class Screen extends JPanel implements Runnable {
 			}
 			
 			//pause game
-			g.drawRect(970, 600, 120, 80);
 			g.drawImage(pauseIcon, 970, 600, null);
 			//fps
 			g.setColor(Color.YELLOW);
@@ -272,7 +272,7 @@ public class Screen extends JPanel implements Runnable {
 			//tower interview
 			if(onHand!=0) {
 				g.setColor(Color.YELLOW);
-				g.drawRect(1130, 50, 160, 160);
+				//g.drawRect(1130, 50, 160, 160);
 				g.setFont(new Font("TimesRoman", Font.BOLD, 20));
 				switch(onHand) {
 				case 1: 
@@ -281,22 +281,21 @@ public class Screen extends JPanel implements Runnable {
 					g.drawString("Cost "+ NormalTower.getCost(), 1130, 290);
 					g.drawString("Damage "+ NormalTower.getDamage(), 1130, 330);
 					g.drawString("Range "+ NormalTower.getRange(), 1130, 370);
-					g.drawString("Shoot Speed "+ NormalTower.getShootSpeed(),1130 , 410);
-					
+					g.drawString("Reload time "+ NormalTower.getShootSpeed(),1130 , 410);
 					break; 
 				case 2: g.drawString("MACHINE GUN TOWER", 1130, 250);
 				g.drawImage(MachineGunTower.getInterview(), 1130, 50, null);
 				g.drawString("Cost "+ MachineGunTower.getCost(), 1130, 290);
 				g.drawString("Damage "+ MachineGunTower.getDamage(), 1130, 330);
 				g.drawString("Range "+ MachineGunTower.getRange(), 1130, 370);
-				g.drawString("Shoot Speed "+ MachineGunTower.getShootSpeed(),1130 , 410);
+				g.drawString("Reload time "+ MachineGunTower.getShootSpeed(),1130 , 410);
 					break;
 				case 3: g.drawString("SNIPER TOWER", 1130, 250);
 				g.drawImage(SniperTower.getInterview(), 1130, 50, null);
 				g.drawString("Cost "+ SniperTower.getCost(), 1130, 290);
 				g.drawString("Damage "+ SniperTower.getDamage(), 1130, 330);
 				g.drawString("Range "+ SniperTower.getRange(), 1130, 370);
-				g.drawString("Shoot Speed "+ SniperTower.getShootSpeed(),1130 , 410);
+				g.drawString("Reload time "+ SniperTower.getShootSpeed(),1130 , 410);
 					break;
 				}
 				
@@ -320,6 +319,13 @@ public class Screen extends JPanel implements Runnable {
 				started=true;
 			}
 	}
+	
+	public void newGame() {
+		started=false;
+		loadGame();
+		//startGame();
+	}
+	
 	
 	public void loadSaveGame() {
 		if(saveGame) {
@@ -358,6 +364,7 @@ public class Screen extends JPanel implements Runnable {
 			else gameField.setSpawning(false);
 			} else gameField.setSpawning(false);
 			gameField.spawn();
+			
 			for(Enemy e:gameField.getEnemiesList()) {
 				e.run();
 			}
@@ -488,8 +495,14 @@ public class Screen extends JPanel implements Runnable {
 					case 0:
 						switch (indexY) {
 						case 0: //new game
+							Clock.speedUp=1;
+							if(!saveGame) {
 							started=false;
+							startGame();}
+							else {
+							newGame();
 							startGame();
+							}
 						break;
 						case 1://load game
 							//
@@ -514,6 +527,7 @@ public class Screen extends JPanel implements Runnable {
 							break;
 						case 1://continue nextstage
 							gameField.nextStage();
+							Clock.speedUp=1;
 							status=1;
 							break;
 						case 2://
@@ -531,11 +545,12 @@ public class Screen extends JPanel implements Runnable {
 						case 0: //
 							break;
 						case 1://replay
+							newGame();
 							status=0;
 							break;
 						case 2://
 							break;
-						case 4:
+						case 3:
 							status=0;
 							firstTime=true;
 							break;//to main menu

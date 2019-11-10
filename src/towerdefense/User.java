@@ -5,7 +5,7 @@ public class User {
 	Player player;
 	boolean createdBefore=false;
 	static final int DEFAULT_HEALTH = 100;
-	static final int DEFAULT_COIN = 300;
+	static final int DEFAULT_COIN = 100;
 
 	public User(Screen screen) {
 		this.screen = screen;

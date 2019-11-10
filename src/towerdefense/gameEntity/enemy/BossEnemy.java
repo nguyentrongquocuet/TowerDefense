@@ -5,7 +5,7 @@ import towerdefense.Player;
 
 public class BossEnemy extends Enemy{
 	public BossEnemy(Player player, GameField gameField) {
-		super( 300, 30, 1f, 30, 200, "res\\GameEntity\\Enemy\\BossEnemy.png");
+		super( 300, 30, 1f, 30, 100, "res\\GameEntity\\Enemy\\BossEnemy.png");
 		this.player=player;
 		this.gameField=gameField;
 	}

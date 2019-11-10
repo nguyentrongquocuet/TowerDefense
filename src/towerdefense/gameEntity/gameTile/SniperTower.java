@@ -39,7 +39,7 @@ public class SniperTower extends Tower{
 	
 	public static int getRange() {
 		return 140;	
-		}
+	}
 	
 	public static Image getImage() {
 		return image;

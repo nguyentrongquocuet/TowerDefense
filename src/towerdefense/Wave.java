@@ -19,10 +19,12 @@ public class Wave {
 		waveNumber=1;
 		id = new ArrayList<Integer>();
 	}
+	
 	public void buildWaveEnemy() {
 		numberOfEnemies=level.startEnemies+((waveNumber-1)*level.enemiesPerWaveUp);
+		System.out.println("number of nenemies"+ numberOfEnemies);
 		Random rd= new Random();
-		if(numberOfEnemies>=10) boss=1;
+		if(numberOfEnemies>=8) boss=1;
 		small= (int)(numberOfEnemies*(rd.nextInt(1)+1)/4);
 		tanker= (int)((rd.nextInt(2)+1) * numberOfEnemies /5);
 		normal= numberOfEnemies-tanker-small-boss;
@@ -40,6 +42,6 @@ public class Wave {
 				continue;
 			}else {id.add(4); continue;}
 			}
-		System.out.println("WAVE BUILD COMPLETE, WE HAVE "+boss+ " "+normal+ " "+tanker+" "+small);
+		System.out.println("WAVE BUILD COMPLETE, WE HAVE "+id.size()+"  "+boss+ " "+normal+ " "+tanker+" "+small);
 
 	}}

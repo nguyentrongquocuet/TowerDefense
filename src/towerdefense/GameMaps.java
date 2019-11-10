@@ -9,6 +9,8 @@ import java.nio.file.Paths;
 import towerdefense.gameEntity.gameTile.MachineGunTower;
 import towerdefense.gameEntity.gameTile.NormalTower;
 import towerdefense.gameEntity.gameTile.SniperTower;
+import towerdefense.gameEntity.gameTile.Spawner;
+import towerdefense.gameEntity.gameTile.Target;
 import towerdefense.gameEntity.gameTile.Tower;
 
 public class GameMaps {
@@ -20,13 +22,14 @@ public class GameMaps {
 	public int[][] map;
 	public int[][] towerMap;
 	public Tower[] tower;
-	public Position spawnerPosition;
-	public Position targetPosition;
 	public Position spawnerMatrixPosition;
 	public Position targetMatrixPosition;
-	
+	public Target target;
+	public Spawner spawner;
 	public GameMaps(GameField gameField) {
 		this.gameField=gameField;
+		target= new Target();
+		spawner= new Spawner();
 		map = new int[13][26];
 		towerMap = new int[13][26];
 		tower= new Tower[13*26];
@@ -52,12 +55,12 @@ public class GameMaps {
 		return tower;
 	}
 
-	public Position getSpawnerPosition() {
-		return spawnerPosition;
+	public Target getTarget() {
+		return target;
 	}
 
-	public Position getTargetPosition() {
-		return targetPosition;
+	public Spawner getSpawner() {
+		return spawner;
 	}
 
 	public Position getSpawnerMatrixPosition() {
@@ -96,10 +99,10 @@ public class GameMaps {
 			for (int j = 0; j < 26; j++) {
 				if (this.map[i][j] == 3) {
 					spawnerMatrixPosition = new Position(i, j);
-					spawnerPosition = new Position(j * 40 + 70, i * 40 + 70);
+					spawner.setPos(j * 40 + 70, i * 40 + 70);
 				} else if (this.map[i][j] == 2) {
 					targetMatrixPosition = new Position(i, j);
-					targetPosition = new Position(j * 40 + 70, i * 40 + 70);
+					target.setPos(j * 40 + 70, i * 40 + 70);
 				}
 			}
 		}

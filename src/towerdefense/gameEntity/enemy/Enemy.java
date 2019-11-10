@@ -48,7 +48,7 @@ public abstract class Enemy implements GameEntity {
 		this.damage = damage;
 		this.reward = reward;
 		this.texturePath = texturePath;
-		pos = gameMaps.spawnerPosition;
+		pos = gameMaps.getSpawner().pos;
 		mPosX=(int)gameMaps.getSpawnerMatrixPosition().x;
 		mPosY=(int)gameMaps.getSpawnerMatrixPosition().y;
 	}

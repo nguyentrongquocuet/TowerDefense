@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class GameStage {
 	private int numberOfWave;
 	int stageNumber;
-	private int waveNumber;
+	//private int waveNumber;
 	private Wave wave;
 	Level level;
 	ArrayList<Integer> stageEnemies;
@@ -14,13 +14,14 @@ public class GameStage {
 		stageEnemies=new ArrayList<Integer>();
 		level=lv;
 		wave= new Wave(lv);
-		stageNumber=1;
-		waveNumber=1;
+		//stageNumber=1;
+		//waveNumber=1;
 	}
 
 	public void buildStageEnemy() {
 		numberOfWave=stageNumber;
-		for(int i=waveNumber; i<=numberOfWave; i++) {
+		System.out.println("stage number"+ stageNumber+ "number of wave"+ numberOfWave);
+		for(int i=1; i<=numberOfWave; i++) {
 			wave.waveNumber=i;
 			wave.buildWaveEnemy();
 			for(int j=0; j<wave.id.size(); j++) {
