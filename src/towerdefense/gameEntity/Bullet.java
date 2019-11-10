@@ -50,9 +50,7 @@ public class Bullet implements GameEntity{
 			active=false;
 			readyToFire=false;
 			return;
-		}
-		
-		if(stockPosition.distance(enemy.pos)>range) {active=false; readyToFire=false; return;}
+		} else if(stockPosition.distance(enemy.pos)>range) {active=false; readyToFire=false; return;}
 		}
 	}
 

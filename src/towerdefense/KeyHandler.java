@@ -25,12 +25,9 @@ public class KeyHandler implements KeyListener {
 	public void keyPressed(KeyEvent e) {
 		int keyCode = e.getKeyCode();
 		System.out.print("KEYCODE: " + keyCode + "\n");
-		if (keyCode == 32) {
-			this.gameStatus.srtGame();
-		}
-		if (keyCode == 27) {
-			this.gameStatus.exitGame();
-		}
+//		if (keyCode == 27) {
+//			this.gameStatus.exitGame();
+//		}
 		if(keyCode==71) {
 			gameStatus.destroy();
 		}

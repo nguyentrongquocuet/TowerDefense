@@ -97,7 +97,7 @@ public class GameField {
 		System.out.println("STAGE NUMBER" + stage.stageNumber);
 	}
 	public void update() {
-		
+		//System.out.println("update ting");
 		gameMaps.buildTowerMap();
 		if(index==pivok) {endWave=true;
 		waveNumber++; 

@@ -11,7 +11,6 @@ import java.awt.event.MouseEvent;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
-import com.sun.xml.internal.ws.api.config.management.policy.ManagementAssertion.Setting;
 
 import towerdefense.gameEntity.enemy.Enemy;
 import towerdefense.gameEntity.gameTile.Mountain;
@@ -29,6 +28,7 @@ public class Screen extends JPanel implements Runnable {
 	 */
 	private static final long serialVersionUID = 1L;
 	// khai bao
+	private boolean firstTime=true;
 	private boolean started=false;
 	private int fps = 0;
 	public boolean isRunning = false;
@@ -43,10 +43,15 @@ public class Screen extends JPanel implements Runnable {
 	private int mousePosY = 0;
 	Color warning = new Color(255, 16, 0, 90);
 	Color exepting = new Color(64, 64, 64, 64);
-	Image winImage= new ImageIcon("res\\Background\\WinStage.jpg").getImage();
-	Image lose= new ImageIcon("res\\Background\\Lose.jpg").getImage();
-	Image levelSelect= new ImageIcon("res\\Background\\WinStage.jpg").getImage();
-	Image pauseMenu= new ImageIcon("res\\Background\\PauseMenu.jpg").getImage();
+	Image winImage= new ImageIcon("res\\Background\\WinStageMenu.png").getImage();
+	Image lose= new ImageIcon("res\\Background\\LoseMenu.png").getImage();
+	Image levelSelect= new ImageIcon("res\\Background\\LevelSelect.png").getImage();
+	Image pauseMenu= new ImageIcon("res\\Background\\PauseMenu.png").getImage();
+	Image canSpeedUp= new ImageIcon("res\\Background\\SpeedUp.png").getImage();
+	Image cantSpeedUp= new ImageIcon("res\\Background\\nonSpeedUp.png").getImage();
+	Image pauseIcon= new ImageIcon("res\\Background\\Pause.png").getImage();
+	Image background= new ImageIcon("res\\Background\\BackGround.jpg").getImage();
+	Image mainMenu= new ImageIcon("res\\Background\\MainMenu.png").getImage();
 	
 	// ham
 	public Screen(Frame frame) {
@@ -75,7 +80,7 @@ public class Screen extends JPanel implements Runnable {
 		 * 
 		 * case 0: start game scence startScense
 		 * case 1: in game 
-		 * sase 2: pause game: included setting: level(sound / maybe)...
+		 * case 2: pause game: included setting: level(sound / maybe)...
 		 * 
 		 * 
 		 * 
@@ -83,36 +88,47 @@ public class Screen extends JPanel implements Runnable {
 		 * }
 		 */
 		
-		
-		if(status ==1) inGame(g);
-		if(status ==0) startScene(g);
-		if(status ==2) winScense(g);
-		if(status ==3) loseScense(g);
-		if(status ==4) pauseGameMenu(g);
-		if(status ==5) Setting(g);
-		
-
+		switch (status) {
+		case 0:
+			startScene(g);
+			break;
+		case 1:
+			inGame(g);
+			break;
+		case 2:
+			winScense(g);
+			break;
+		case 3:
+			loseScense(g);
+			break;
+		case 4:
+			pauseGameMenu(g);
+			break;
+		case 5:
+			setting(g);
+			break;
+		default:
+			break;
+		}
 	}
-
-
-
-
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	private void pauseGameMenu(Graphics g) {
-		// TODO Auto-generated method stub
 		g.drawImage(pauseMenu, 0, 0, null);
 		
 	}
 	
-	private void Setting(Graphics g) {
-		// TODO Auto-generated method stub
+	private void setting(Graphics g) {
+		
+		g.drawImage(levelSelect, 0, 0, null);
+//		for(int i=210; i<660; i+=90) {
+//			g.drawRect(543, i, 250, 90);
+//		}
 		
 	}
 	
 	private void winScense(Graphics g) {
-		// TODO Auto-generated method stub
 		// win, next stage
 		g.drawImage(winImage, 0, 0, null);
 	}
@@ -122,20 +138,28 @@ public class Screen extends JPanel implements Runnable {
 		g.drawImage(lose, 0, 0, null);
 	}
 	
+	
+	//status 0
 	private void startScene(Graphics g) {
-		if(level==null) status=5;
+		//if(firstTime) {loadGame(); firstTime=false;}
+		if(level==null) status =5;
 		else {
+		if(firstTime) {
+			loadGame();
+			firstTime=false;
+		}
+		
 		g.setColor(Color.yellow);
 		g.fillRect(0, 0, frame.getWidth(), frame.getHeight());
-		g.drawImage(new ImageIcon("res\\Background\\MainMenuBackground.jpg").getImage(), 0, 0, null);
+		g.drawImage(mainMenu, 0, 0, null);
 		g.setColor(Color.red);
-		g.drawString("PRESS SPACE OR CLICK TO PLAY", 600, 600);
-	}}
+		}
+}
 		
 	private void inGame(Graphics g) {
 		if (status == 1) {
 			// Background
-			g.drawImage(new ImageIcon("res\\Background\\MainMenuBackground.jpg").getImage(), 0, 0, null);
+			g.drawImage(background, 0, 0, null);
 
 			g.setColor(Color.YELLOW);
 			g.drawRect(0, 0, 40, 40);// o chua fps
@@ -159,6 +183,7 @@ public class Screen extends JPanel implements Runnable {
 					}
 				}
 			}
+			
 			// ve quai
 			for (Enemy enemy:gameField.getEnemiesList()) {
 				if(enemy.active&&enemy.alive) {
@@ -187,10 +212,9 @@ public class Screen extends JPanel implements Runnable {
 			g.setColor(Color.YELLOW);
 			g.drawRect(810, 600, 120, 80);
 			if(Clock.speedUp!=4) {
-				g.drawImage(new ImageIcon("res\\Background\\SpeedUp.png").getImage(), 810, 600, null);
-			} else g.drawImage(new ImageIcon("res\\Background\\nonSpeedUp.png").getImage(), 810, 600, null);
+				g.drawImage(canSpeedUp, 810, 600, null);
+			} else g.drawImage(cantSpeedUp, 810, 600, null);
 			
-			//display tower interview
 			
 			// display towerslist
 			g.setColor(Color.YELLOW);
@@ -204,6 +228,7 @@ public class Screen extends JPanel implements Runnable {
 					g.drawImage(new ImageIcon(SniperTower.getPath()).getImage(), i, 600, null);
 				i += 10;
 			}
+			
 			// display health and coin
 			g.setColor(Color.YELLOW);
 			g.drawRect(50, 600, 120, 40);
@@ -234,7 +259,16 @@ public class Screen extends JPanel implements Runnable {
 					break;
 				}
 			}
-			//
+			
+			//pause game
+			g.drawRect(970, 600, 120, 80);
+			g.drawImage(pauseIcon, 970, 600, null);
+			//fps
+			g.setColor(Color.YELLOW);
+			g.drawString(fps + "", 10, 20);
+			
+			
+			//tower interview
 			if(onHand!=0) {
 				g.setColor(Color.YELLOW);
 				g.drawRect(1130, 50, 160, 160);
@@ -267,15 +301,12 @@ public class Screen extends JPanel implements Runnable {
 				
 			}
 			
-		g.setColor(Color.YELLOW);
-		g.drawString(fps + "", 10, 20);
 		}
 	}
 	
 	// vao man hinh cho(maybe menu)
 	public void loadGame() {
 		isRunning = true;
-		level = new Level(1);
 		user = new User(this);
 		user.creatPlayer();
 		gameField = new GameField(level, user.player);
@@ -289,17 +320,15 @@ public class Screen extends JPanel implements Runnable {
 			}
 
 	}
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	public void run() {
 		System.out.print("RUNNING!\n");
 		long beginTimes = System.currentTimeMillis();
 		int frames = 0;
-		loadGame();
-		//System.out.println(frame.getWidth() + frame.getHeight());
-		while (isRunning) {
-			Clock.update();
-			repaint();
+		while (isRunning || level==null) {
+			if(status==1) Clock.update();
 			update();
+			repaint();
 			frames++;
 			if (System.currentTimeMillis() - beginTimes >= 1000) {
 				fps = frames;
@@ -309,10 +338,10 @@ public class Screen extends JPanel implements Runnable {
 			  try { Thread.sleep(2); } catch (InterruptedException e) {
 			  e.printStackTrace(); }
 		}
-		System.out.print("STOP");
+		System.out.println("STOP");
 		System.exit(0);
 	}
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	public void update() {
 		if(status==1) {
 			if(Clock.getTotalTime()-gameField.getTimeLastWave()>= level.newWaveSpeed*Clock.deltaDelay()) {
@@ -327,9 +356,10 @@ public class Screen extends JPanel implements Runnable {
 			for(int i=0; i<gameField.gameMaps.getTowerSize(); i++) {
 				if(gameField.gameMaps.tower[i]!=null)gameField.gameMaps.tower[i].checkEnemy();
 			}
-		}
+		
 		if(gameField.isWinStage()) status=2;
 		if(user.player.health<=0) status=3;
+		}
 	}
 	
 	public void destroyTower() {
@@ -353,7 +383,6 @@ public class Screen extends JPanel implements Runnable {
 				if(gameField.gameMaps.map[indexY][indexX] == -1) return true;
 				return false;
 			}
-			
 		} else
 			return false;
 		return true;
@@ -419,8 +448,7 @@ public class Screen extends JPanel implements Runnable {
 
 					}
 				}
-			} else
-				startGame(user);
+			}
 		}
 
 		// nha chuot, xay xong nha
@@ -430,13 +458,14 @@ public class Screen extends JPanel implements Runnable {
 				placeTower(e.getX(), e.getY(), onHand);
 				onHand = 0;
 			}
-			
-			if(status==1&&mousePosX>=810&& mousePosX<=930) {
-				if(mousePosY>=600&&mousePosY<=680) {
+			if(status==1&&mousePosY>=600&&mousePosY<=680) {
+				if(mousePosX>=810&& mousePosX<=930) {
 					Clock.speedUp();
 				}
+				if(mousePosX>=970&&mousePosX<=1090) {
+					status=4;
+				}
 			}
-			
 			Effect(e);
 		}
 
@@ -450,53 +479,96 @@ public class Screen extends JPanel implements Runnable {
 					case 0:
 						switch (indexY) {
 						case 0: //new game
-							
+							startGame(user);
 						break;
 						case 1://load game
 							break;
-						case 2://options
+						case 2:
+							status=5;
 							break;
+						case 3: break;
 						case 4:
+							isRunning=false;
 							break;//exit
 						}
 						break;
+						
+					case 1: 
+						break;
+						
 					case 2:
 						switch (indexY) {
 						case 0: //
 							break;
 						case 1://continue nextstage
+							gameField.nextStage();
+							status=1;
 							break;
 						case 2://
 							break;
+						case 3:break;
 						case 4:
+							status=0;
 							break;//return main menu
 						}
 						break;
+						
 					case 3:
 						switch (indexY) {
 						case 0: //
 							break;
 						case 1://replay
+							status=0;
 							break;
 						case 2://
 							break;
 						case 4:
+							status=0;
+							firstTime=true;
 							break;//to main menu
 						}
 						break;
 					case 4:
 						switch (indexY) {
-						case 0: //continue
+						case 0: //
 							break;
-						case 1://
+						case 1://continue
+							status=1;
 							break;
 						case 2://
 							break;
 						case 4:
-							break;//to main menu
+							break;
+						case 3:
+							status=0;
+							break;
 						}
 						break;
+						
 					case 5:
+						switch (indexY) {
+						case 0: break;
+						case 1: //
+							level= new Level(1);
+							//setLevel=true;
+							isRunning=true;
+							status=0;
+							break;
+						case 2:// level 1
+							level= new Level(2);
+							//setLevel=true;
+							isRunning=true;
+							status=0;
+							break;
+						case 3:// level 2
+							level= new Level(3);
+							//setLevel=true;
+							isRunning=true;
+							status=0;
+							break;
+						case 4:
+							break;//to main menu
+						}
 					}
 				}
 			}
@@ -507,10 +579,6 @@ public class Screen extends JPanel implements Runnable {
 	public class GameStatus {
 		public void exitGame() {
 			isRunning = false;
-		}
-
-		public void srtGame() {
-			startGame(user);
 		}
 
 		public void destroy() {
