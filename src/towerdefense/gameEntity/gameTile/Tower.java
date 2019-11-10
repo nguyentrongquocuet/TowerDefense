@@ -47,13 +47,14 @@ public abstract class Tower extends GameTile{
 				bullet.enemy=enemy;
 				bullet.readyToFire=true;
 				bullet.active=true;
-				if(bullet.pos.distance(pos)>range) bullet.active=false;
-				if(bullet.active==false) { bullet.pos.x = pos.x; bullet.pos.y=pos.y; bullet.enemy=null;}
+				bullet.drX=enemy.pos.x-bullet.pos.x;
+				bullet.drY=enemy.pos.y-bullet.pos.y;
 				return;
 			}
 		}}
-		
 		bullet.move();
+		if(bullet.pos.distance(pos)>range) bullet.active=false;
+		if(bullet.active==false) { bullet.pos.x = pos.x; bullet.pos.y=pos.y; bullet.enemy=null;}
 	}
 		
 	public void draw(Graphics g) {

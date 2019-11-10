@@ -6,6 +6,7 @@ import towerdefense.Position;
 import towerdefense.gameEntity.enemy.Enemy;
 
 public class Bullet implements GameEntity{
+	public float drX, drY;
 	public boolean readyToFire=false;
 	public String texturePath;
 	public GameMaps gameMaps;
@@ -42,8 +43,8 @@ public class Bullet implements GameEntity{
 	public void move() {
 		
 		if(active&&readyToFire) {
-		pos.x+=(enemy.pos.x-pos.x)*deltaMove()/bulletSpeed;
-		pos.y+=(enemy.pos.y-pos.y)*deltaMove()/bulletSpeed;
+		pos.x+=drX*deltaMove()/bulletSpeed;
+		pos.y+=drY*deltaMove()/bulletSpeed;
 		
 		if(pos.distance(enemy.pos)<=10) {
 			enemy.realTimeHealth-=damage;
