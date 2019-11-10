@@ -28,6 +28,7 @@ public class Screen extends JPanel implements Runnable {
 	 */
 	private static final long serialVersionUID = 1L;
 	// khai bao
+	boolean saveGame=false;
 	private boolean firstTime=true;
 	private boolean started=false;
 	private int fps = 0;
@@ -313,20 +314,28 @@ public class Screen extends JPanel implements Runnable {
 	}
 
 	// bat dau choi
-	public void startGame(User user) {
-		if(started==false) {
-			status = 1;
-			started=true;
+	public void startGame() {
+			if(!started) {
+				status=1;
+				started=true;
 			}
-
 	}
+	
+	public void loadSaveGame() {
+		if(saveGame) {
+			status=1;
+		} else System.out.println("no save game found");
+	}
+	
+	
+	
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	public void run() {
 		System.out.print("RUNNING!\n");
 		long beginTimes = System.currentTimeMillis();
 		int frames = 0;
 		while (isRunning || level==null) {
-			if(status==1) Clock.update();
+			Clock.update();
 			update();
 			repaint();
 			frames++;
@@ -479,9 +488,12 @@ public class Screen extends JPanel implements Runnable {
 					case 0:
 						switch (indexY) {
 						case 0: //new game
-							startGame(user);
+							started=false;
+							startGame();
 						break;
 						case 1://load game
+							//
+							loadSaveGame();
 							break;
 						case 2:
 							status=5;
@@ -509,6 +521,7 @@ public class Screen extends JPanel implements Runnable {
 						case 3:break;
 						case 4:
 							status=0;
+							saveGame = true;
 							break;//return main menu
 						}
 						break;
@@ -541,6 +554,8 @@ public class Screen extends JPanel implements Runnable {
 							break;
 						case 3:
 							status=0;
+							saveGame=true;
+							//firstTime=true;
 							break;
 						}
 						break;
