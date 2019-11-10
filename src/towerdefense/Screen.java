@@ -19,8 +19,6 @@ import towerdefense.gameEntity.gameTile.Rock;
 import towerdefense.gameEntity.gameTile.NormalTower;
 import towerdefense.gameEntity.gameTile.Road;
 import towerdefense.gameEntity.gameTile.SniperTower;
-import towerdefense.gameEntity.gameTile.Spawner;
-import towerdefense.gameEntity.gameTile.Target;
 
 public class Screen extends JPanel implements Runnable {
 	/**
@@ -28,9 +26,11 @@ public class Screen extends JPanel implements Runnable {
 	 */
 	private static final long serialVersionUID = 1L;
 	// khai bao
+	PlayMusic playMusic;
 	boolean saveGame=false;
 	private boolean firstTime=true;
 	private boolean started=false;
+	boolean select =false;
 	private int fps = 0;
 	public boolean isRunning = false;
 	public int status=0;// status=1:ingame, 0: pause
@@ -65,6 +65,7 @@ public class Screen extends JPanel implements Runnable {
 		addMouseListener(mouseHandler);
 		addMouseMotionListener(mouseHandler);
 		setVisible(true);
+		playMusic= new PlayMusic(this);
 		thread.start();
 	}
 
@@ -341,6 +342,8 @@ public class Screen extends JPanel implements Runnable {
 		long beginTimes = System.currentTimeMillis();
 		int frames = 0;
 		while (isRunning || level==null) {
+			if(select==true)
+			{PlayMusic.playMusic("res\\Sound\\select.wav");select=false;}
 			Clock.update();
 			update();
 			repaint();
@@ -385,6 +388,7 @@ public class Screen extends JPanel implements Runnable {
 			gameField.gameMaps.map[(mousePosY-50)/40][(mousePosX-50)/40]=-1;
 			gameField.gameMaps.changePos.setPosition((mousePosY - 50) / 40,(mousePosX - 50) / 40);
 			gameField.gameMaps.change=true;
+			select=true;
 			}}
 	}
 	
@@ -473,13 +477,16 @@ public class Screen extends JPanel implements Runnable {
 			if (status == 1 && onHand != 0) {
 				placeTower(e.getX(), e.getY(), onHand);
 				onHand = 0;
+				select=true;
 			}
 			if(status==1&&mousePosY>=600&&mousePosY<=680) {
 				if(mousePosX>=810&& mousePosX<=930) {
 					Clock.speedUp();
+					select=true;
 				}
 				if(mousePosX>=970&&mousePosX<=1090) {
 					status=4;
+					select=true;
 				}
 			}
 			Effect(e);
@@ -495,6 +502,7 @@ public class Screen extends JPanel implements Runnable {
 					case 0:
 						switch (indexY) {
 						case 0: //new game
+							select=true;
 							Clock.speedUp=1;
 							if(!saveGame) {
 							started=false;
@@ -506,13 +514,16 @@ public class Screen extends JPanel implements Runnable {
 						break;
 						case 1://load game
 							//
+							select=true;
 							loadSaveGame();
 							break;
 						case 2:
+							select=true;
 							status=5;
 							break;
 						case 3: break;
 						case 4:
+							PlayMusic.playMusic("res\\Sound\\select.wav");
 							isRunning=false;
 							break;//exit
 						}
@@ -526,6 +537,7 @@ public class Screen extends JPanel implements Runnable {
 						case 0: //
 							break;
 						case 1://continue nextstage
+							select=true;
 							gameField.nextStage();
 							Clock.speedUp=1;
 							status=1;
@@ -534,6 +546,7 @@ public class Screen extends JPanel implements Runnable {
 							break;
 						case 3:break;
 						case 4:
+							select=true;
 							status=0;
 							saveGame = true;
 							break;//return main menu
@@ -545,12 +558,14 @@ public class Screen extends JPanel implements Runnable {
 						case 0: //
 							break;
 						case 1://replay
+							select=true;
 							newGame();
 							status=0;
 							break;
 						case 2://
 							break;
 						case 3:
+							select=true;
 							status=0;
 							firstTime=true;
 							break;//to main menu
@@ -561,6 +576,7 @@ public class Screen extends JPanel implements Runnable {
 						case 0: //
 							break;
 						case 1://continue
+							select=true;
 							status=1;
 							break;
 						case 2://
@@ -568,6 +584,7 @@ public class Screen extends JPanel implements Runnable {
 						case 4:
 							break;
 						case 3:
+							select=true;
 							status=0;
 							saveGame=true;
 							//firstTime=true;
@@ -579,18 +596,21 @@ public class Screen extends JPanel implements Runnable {
 						switch (indexY) {
 						case 0: break;
 						case 1: //
+							select=true;
 							level= new Level(1);
 							//setLevel=true;
 							isRunning=true;
 							status=0;
 							break;
 						case 2:// level 1
+							select=true;
 							level= new Level(2);
 							//setLevel=true;
 							isRunning=true;
 							status=0;
 							break;
 						case 3:// level 2
+							select=true;
 							level= new Level(3);
 							//setLevel=true;
 							isRunning=true;
@@ -600,6 +620,7 @@ public class Screen extends JPanel implements Runnable {
 							break;//to main menu
 						}
 					}
+					
 				}
 			}
 			
